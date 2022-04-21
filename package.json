@@ -12,6 +12,7 @@
     "@types/react-dom": "^18.0.1",
     "@types/three": "^0.139.0",
     "gsap": "^3.10.3",
+    "lil-gui": "^0.16.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-scripts": "5.0.1",
