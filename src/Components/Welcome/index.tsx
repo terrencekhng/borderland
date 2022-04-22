@@ -20,6 +20,10 @@ import doorAmbientOcclusionImage from '../../assets/textures/door/ambientOcclusi
 import doorMetalnessImage from '../../assets/textures/door/metalness.jpg';
 import doorRoughnessImage from '../../assets/textures/door/roughness.jpg';
 
+// Debug
+const gui = new GUI();
+gui.close();
+
 const Welcome = () => {
   const boxRef = useRef<HTMLDivElement>(null);
   const el = useRef<HTMLDivElement>(null);
@@ -30,10 +34,6 @@ const Welcome = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   };
-
-  // Debug
-  const gui = new GUI();
-  gui.close();
 
   useEffect(() => {
     // Textures
@@ -278,35 +278,35 @@ const Welcome = () => {
     });
 
     // Debug
-    gui.add(group.position, 'x', -3, 3, 0.2);
-    gui.add(group.position, 'y', -3, 3, 0.2);
-    gui.add(group.position, 'z', -3, 3, 0.2);
-    gui.add(cube1.material, 'wireframe').name('Cube 1 wireframe');
-    gui.add(cube2.material, 'wireframe').name('Cube 2 wireframe');
-    const parameters = {
-      cube1Color: 0xff0000,
-      cube2Color: 0x00ff00,
-      spin: () => {
-        gsap.to(group.rotation, {
-          duration: 1,
-          y: group.rotation.y + 5,
-        });
-      },
-    };
-    gui
-      .addColor(parameters, 'cube1Color')
-      .onChange(() => {
-        cube1.material.color.set(parameters.cube1Color);
-      })
-      .name('Cube 1 color');
-    gui
-      .addColor(parameters, 'cube2Color')
-      .onChange(() => {
-        cube2.material.color.set(parameters.cube2Color);
-      })
-      .name('Cube 2 color');
-    gui
-      .add(parameters, 'spin');
+    // gui.add(group.position, 'x', -3, 3, 0.2);
+    // gui.add(group.position, 'y', -3, 3, 0.2);
+    // gui.add(group.position, 'z', -3, 3, 0.2);
+    // gui.add(cube1.material, 'wireframe').name('Cube 1 wireframe');
+    // gui.add(cube2.material, 'wireframe').name('Cube 2 wireframe');
+    // const parameters = {
+    //   cube1Color: 0xff0000,
+    //   cube2Color: 0x00ff00,
+    //   spin: () => {
+    //     gsap.to(group.rotation, {
+    //       duration: 1,
+    //       y: group.rotation.y + 5,
+    //     });
+    //   },
+    // };
+    // gui
+    //   .addColor(parameters, 'cube1Color')
+    //   .onChange(() => {
+    //     cube1.material.color.set(parameters.cube1Color);
+    //   })
+    //   .name('Cube 1 color');
+    // gui
+    //   .addColor(parameters, 'cube2Color')
+    //   .onChange(() => {
+    //     cube2.material.color.set(parameters.cube2Color);
+    //   })
+    //   .name('Cube 2 color');
+    // gui
+    //   .add(parameters, 'spin');
 
     const tick = () => {
       // Time
