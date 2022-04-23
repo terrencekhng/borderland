@@ -1,8 +1,6 @@
 import GUI from "lil-gui";
 import {useEffect, useState} from "react";
 import * as THREE from "three";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import gsap from 'gsap';
 
 // Import texture resources
 // door textures
@@ -29,12 +27,20 @@ import graveNormalTextureImage from '../../assets/textures/graves/StoneBricksBei
 import graveAmbientOcclusionTextureImage from '../../assets/textures/graves/StoneBricksBeige015_AO_1K.jpg';
 
 // Styles
-import styles from './index.module.css';
+import styles from './index.module.scss';
+
+// Components
+import StaticContent from "./static";
 
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
 };
+
+enum GraveType {
+  Video,
+  Picture
+}
 
 const gui = new GUI();
 gui.close();
@@ -42,6 +48,11 @@ gui.close();
 const HauntedHouse = () => {
 
   let canWiggleCamera = true;
+  let startSurroung = false;
+  const parameters = {
+    videoCount: 2,
+  };
+  let currentVideoCount = 0;
 
   useEffect(() => {
     const textureLoader = new THREE.TextureLoader();
@@ -82,7 +93,9 @@ const HauntedHouse = () => {
 
     const scene = new THREE.Scene();
     const house = new THREE.Group();
+    const cameraGroup = new THREE.Group();
     scene.add(house);
+    scene.add(cameraGroup);
 
     // Fog
     const fog = new THREE.Fog('#262837', 6, 15);
@@ -173,6 +186,7 @@ const HauntedHouse = () => {
     //   color: '#b2b6b1',
     // });
     const graveCount = 50;
+    let specialGrave = [4, 8, 20, 30];
     for (let i = 0; i < graveCount; ++i) {
       const angle = Math.random() * Math.PI * 2;
       const radius = 4 + Math.random() * 6;
@@ -198,6 +212,7 @@ const HauntedHouse = () => {
       grave.rotation.x = (Math.random() - 0.5) * 0.4;
       grave.rotation.y = (Math.random() - 0.5) * 0.4;
       grave.castShadow = true;
+      grave.name = `grave${i + 1}`;
       graves.add(grave);
     }
 
@@ -248,11 +263,10 @@ const HauntedHouse = () => {
     scene.add(ghost3);
 
     const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
-    camera.position.set(4, 3, 8);
-    // camera.lookAt(group.position);
+    camera.position.set(1, 10, 17);
+    camera.lookAt(house.position);
     scene.add(camera);
-    let cameraInitialPosition = camera.position.clone();
-    let cameraInitialRotationPosition = camera.rotation;
+    cameraGroup.add(camera);
 
     const canvas = document.getElementById('haunted-house') as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
@@ -297,13 +311,25 @@ const HauntedHouse = () => {
     // Raycaster
     const raycaster = new THREE.Raycaster();
 
+    const cameraFocusPoint = new THREE.Mesh(
+      new THREE.BoxGeometry(0.3, 0.3, 0.3),
+      new THREE.MeshStandardMaterial({
+        color: 0xff0000,
+      })
+    );
+    cameraFocusPoint.position.z = 4;
+    cameraFocusPoint.position.y = 2;
+    cameraFocusPoint.position.x = 0;
+    cameraFocusPoint.visible = false;
+    scene.add(cameraFocusPoint);
+
     // Orbit controls
-    const orbitControls = new OrbitControls(camera, canvas);
-    orbitControls.enableDamping = true;
-    orbitControls.zoomSpeed = 0.2;
-    orbitControls.enableZoom = true;
-    orbitControls.dampingFactor = 0.02;
-    orbitControls.maxPolarAngle = Math.PI / 2.1;
+    // const orbitControls = new OrbitControls(camera, canvas);
+    // orbitControls.enableDamping = true;
+    // orbitControls.zoomSpeed = 0.2;
+    // orbitControls.enableZoom = true;
+    // orbitControls.dampingFactor = 0.02;
+    // orbitControls.maxPolarAngle = Math.PI / 2.1;
 
     // Cursor
     const cursor = {
@@ -334,20 +360,28 @@ const HauntedHouse = () => {
     let lastScrollTop = listContainer.scrollTop;
     if (listContainer) {
       listContainer.addEventListener('scroll', (e: Event) => {
-
+        console.log(lastScrollTop);
+        lastScrollTop = listContainer.scrollTop;
+        if (lastScrollTop > 300) {
+          startSurroung = true;
+        }
       });
     }
 
+    console.log(-Math.cos(lastScrollTop / sizes.height * 0.7) * 3);
     const mouse = new THREE.Vector2();
     // Animations
     const clock = new THREE.Clock();
+    let previousTime = 0;
     let currentIntersect: null | THREE.Intersection = null;
     const tick = () => {
       const elapsedTime = clock.getElapsedTime();
+      const deltaTime = elapsedTime - previousTime;
+      previousTime = elapsedTime;
 
       window.requestAnimationFrame(tick);
       renderer.render(scene, camera);
-      orbitControls.update();
+      // orbitControls.update();
 
       // Update ghosts
       const ghost1Angle = elapsedTime * 0.5;
@@ -366,10 +400,23 @@ const HauntedHouse = () => {
       ghost3.position.y = Math.cos(elapsedTime * 3) + Math.sin(elapsedTime * 2.5);
 
       // Update camera
-      // if (canWiggleCamera) {
-      //   camera.position.x = cameraInitialPosition.x + cursor.x;
-      //   camera.position.y = cameraInitialPosition.y + cursor.y;
-      // }
+      camera.position.x = Math.sin(lastScrollTop / sizes.height * Math.PI / 2) * 10;
+      camera.position.z = Math.cos(lastScrollTop / sizes.height * Math.PI / 2) * 10;
+      camera.position.y = Math.abs(Math.cos(lastScrollTop / sizes.height) * 0.5 + 3);
+      // camera.lookAt(house.position);
+
+      // Parallax
+      const parallaxX = cursor.x;
+      const parallaxY = -cursor.y;
+      // cameraGroup.position.x = parallaxX;
+      // cameraGroup.position.y = parallaxY;
+      cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * deltaTime * 15;
+      cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * deltaTime * 15;
+
+       // ellipse curve
+      cameraFocusPoint.position.x = 1.5 * Math.sin(lastScrollTop / sizes.height * Math.PI / 2 * 0.5) * 2 - 2;
+      cameraFocusPoint.position.z = 2 * Math.cos(lastScrollTop / sizes.height * Math.PI / 2 * 0.5) * 2;
+      camera.lookAt(cameraFocusPoint.position);
 
        // Raycaster
       const rayCasterObjects = [...graves.children];
@@ -378,13 +425,10 @@ const HauntedHouse = () => {
         let obj = object as THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>;
         obj.material.color.set('#b2b6b1');
       }
-      // for (const intersect of intersects) {
-      //   let sphereObj = intersect.object as THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>;
-      //   sphereObj.material.color.set('#0000ff');
-      // }
+
       if (intersects.length > 0) {
         let sphereObj = intersects[0].object as THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>;
-        sphereObj.material.color.set('#0000ff');
+        sphereObj.material.color.set('rgb(213,215,210)');
       }
 
       if (intersects.length) {
@@ -402,40 +446,72 @@ const HauntedHouse = () => {
     };
     tick();
 
+    const currentGraveWithVideo: Record<string, {obj: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>, videoEl: HTMLVideoElement, light: THREE.Light}> = {};
     window.addEventListener('click', () => {
       if (currentIntersect) {
-        console.log(currentIntersect.object.position);
+        console.log(currentGraveWithVideo);
+        const currentObject = currentIntersect.object as THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>;
+        if (currentVideoCount <= parameters.videoCount) {
+          if (currentGraveWithVideo[currentObject.name]) {
+            // Turn off
+            // Video
+            const videoPlane = currentGraveWithVideo[currentObject.name];
+            videoPlane.obj.geometry.dispose();
+            videoPlane.obj.material.dispose();
+            videoPlane.videoEl.pause();
+            scene.remove(videoPlane.obj);
+            currentVideoCount -= 1;
+            // remove light
+            videoPlane.light.dispose();
+            scene.remove(videoPlane.light);
+            delete currentGraveWithVideo[currentObject.name];
+          } else {
+            // Turn on
+            // Video
+            const videoIndex = Math.random() > 0.5 ? 1 : 2;
+            const video = document.getElementById(`video${videoIndex}`) as HTMLVideoElement;
+            video.loop = true;
+            const videoTexture = new THREE.VideoTexture(video);
+            const videoPlaneWidth = 2;
+            const videoPlaneHeight = videoPlaneWidth * video.videoHeight / video.videoWidth;
+            const videoPlane = new THREE.Mesh(
+              new THREE.PlaneGeometry(videoPlaneWidth, videoPlaneHeight),
+              new THREE.MeshBasicMaterial({
+                map: videoTexture,
+                transparent: true,
+              })
+            );
+            videoPlane.position.set(currentObject.position.x, currentObject.geometry.parameters.height + currentObject.position.y, currentObject.position.z);
+            scene.add(videoPlane);
+            video.play();
+            currentVideoCount += 1;
+            // Light
+            const graveLight = new THREE.DirectionalLight('rgba(232,200,79,0.7)', 0.6);
+            graveLight.position.set(currentObject.position.x, -0.3, currentObject.position.z + 0.5);
+            graveLight.rotation.x = Math.PI * 0.88;
+            scene.add(graveLight);
+
+            currentGraveWithVideo[currentObject.name] = {
+              obj: videoPlane,
+              videoEl: video,
+              light: graveLight,
+            };
+          }
+        }
       }
     });
   });
 
   return (
     <>
-      <div className={styles['list-container']} id='list-container'>
-        <div className={styles['list-item']} id='list-item'>
-          <p>
-            asfasdfasdfasdfasdfasdfasdf
-            asdfasfasdfasdfasdfasdfasdfas
-          </p>
-          <p>
-            asfasdfasdfasdfasdfasdfasdf
-            asdfasfasdfasdfasdfasdfasdfas
-          </p>
-          <p>
-            asfasdfasdfasdfasdfasdfasdf
-            asdfasfasdfasdfasdfasdfasdfas
-          </p>
-          <p>
-            asfasdfasdfasdfasdfasdfasdf
-            asdfasfasdfasdfasdfasdfasdfas
-          </p>
-          <p>
-            asfasdfasdfasdfasdfasdfasdf
-            asdfasfasdfasdfasdfasdfasdfas
-          </p>
-        </div>
-      </div>
+      <StaticContent />
       <canvas id='haunted-house'></canvas>
+      <video className={styles.video} id="video1" loop crossOrigin="anonymous" playsInline>
+        <source src="https://personal-1301369739.cos.ap-guangzhou.myqcloud.com/threejs/assets/videos/video1.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+      </video>
+      <video className={styles.video} id="video2" loop crossOrigin="anonymous" playsInline>
+        <source src="https://personal-1301369739.cos.ap-guangzhou.myqcloud.com/threejs/assets/videos/video2.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+      </video>
     </>
   )
 }
