@@ -23,6 +23,10 @@ import grassColorTextureImage from '../../assets/textures/grass/color.jpg';
 import grassNormalTextureImage from '../../assets/textures/grass/normal.jpg';
 import grassAmbientOcclusionTextureImage from '../../assets/textures/grass/ambientOcclusion.jpg';
 import grassRoughnessTextureImage from '../../assets/textures/grass/roughness.jpg';
+// grave textures
+import graveColorTextureImage from '../../assets/textures/graves/StoneBricksBeige015_Flat.jpg';
+import graveNormalTextureImage from '../../assets/textures/graves/StoneBricksBeige015_NRM_1K.jpg';
+import graveAmbientOcclusionTextureImage from '../../assets/textures/graves/StoneBricksBeige015_AO_1K.jpg';
 
 // Styles
 import styles from './index.module.css';
@@ -71,14 +75,22 @@ const HauntedHouse = () => {
     grassRoughnessTexture.repeat.set(8, 8);
     grassRoughnessTexture.wrapT = THREE.RepeatWrapping;
     grassRoughnessTexture.wrapS = THREE.RepeatWrapping;
+    // Load grave textures
+    const graveColorTexture = textureLoader.load(graveColorTextureImage);
+    const graveNormalTexture = textureLoader.load(graveNormalTextureImage);
+    const graveAmbientOcclusionTexture = textureLoader.load(graveAmbientOcclusionTextureImage);
 
     const scene = new THREE.Scene();
     const house = new THREE.Group();
     scene.add(house);
 
     // Fog
-    const fog = new THREE.Fog('#262837', 1, 15);
+    const fog = new THREE.Fog('#262837', 6, 15);
     scene.fog = fog;
+    const fogGUI = gui.addFolder('Fog');
+    fogGUI.addColor(fog, 'color');
+    fogGUI.add(fog, 'near').min(1).max(10).step(0.01);
+    fogGUI.add(fog, 'far').min(5).max(30).step(0.1);
 
     // Walls
     const walls = new THREE.Mesh(
@@ -156,10 +168,10 @@ const HauntedHouse = () => {
     // Graveyards
     const graves = new THREE.Group();
     scene.add(graves);
-    const graveGeometry = new THREE.BoxGeometry(0.6, 0.8, 0.2);
-    const graveMaterial = new THREE.MeshStandardMaterial({
-      color: '#b2b6b1',
-    });
+    const graveGeometry = new THREE.BoxGeometry(0.6, 0.8, 0.2, 32, 32, 32);
+    // const graveMaterial = new THREE.MeshStandardMaterial({
+    //   color: '#b2b6b1',
+    // });
     const graveCount = 50;
     for (let i = 0; i < graveCount; ++i) {
       const angle = Math.random() * Math.PI * 2;
@@ -169,7 +181,16 @@ const HauntedHouse = () => {
 
       const grave = new THREE.Mesh(
         graveGeometry,
-        graveMaterial
+        new THREE.MeshStandardMaterial({
+          // color: '#b2b6b1',
+          map: graveColorTexture,
+          normalMap: graveNormalTexture,
+          aoMap: graveAmbientOcclusionTexture,
+        })
+      );
+      grave.geometry.setAttribute(
+        'uv2',
+        new THREE.Float32BufferAttribute(grave.geometry.attributes.uv.array, 2)
       );
       grave.position.x = x;
       grave.position.z = z;
@@ -227,7 +248,7 @@ const HauntedHouse = () => {
     scene.add(ghost3);
 
     const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
-    camera.position.set(4, 2, 5);
+    camera.position.set(4, 3, 8);
     // camera.lookAt(group.position);
     scene.add(camera);
     let cameraInitialPosition = camera.position.clone();
@@ -273,20 +294,16 @@ const HauntedHouse = () => {
     // Shadow map algorithm
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+    // Raycaster
+    const raycaster = new THREE.Raycaster();
+
     // Orbit controls
     const orbitControls = new OrbitControls(camera, canvas);
     orbitControls.enableDamping = true;
     orbitControls.zoomSpeed = 0.2;
-    orbitControls.enableZoom = false;
+    orbitControls.enableZoom = true;
     orbitControls.dampingFactor = 0.02;
     orbitControls.maxPolarAngle = Math.PI / 2.1;
-    orbitControls.addEventListener('start', () => {
-      canWiggleCamera = false;
-    });
-    orbitControls.addEventListener('end', () => {
-      cameraInitialPosition = camera.position.clone();
-      canWiggleCamera = true;
-    });
 
     // Cursor
     const cursor = {
@@ -296,6 +313,9 @@ const HauntedHouse = () => {
     window.addEventListener('mousemove', (e: MouseEvent) => {
       cursor.x = e.clientX / sizes.width - 0.5;
       cursor.y = e.clientY / sizes.height - 0.5;
+
+      mouse.x = e.clientX / sizes.width * 2 - 1;
+      mouse.y = -(e.clientY / sizes.height * 2 - 1);
     });
 
     window.addEventListener('resize', () => {
@@ -314,32 +334,14 @@ const HauntedHouse = () => {
     let lastScrollTop = listContainer.scrollTop;
     if (listContainer) {
       listContainer.addEventListener('scroll', (e: Event) => {
-        canWiggleCamera = false;
-        counter += 0.1;
-        let currentScrollTop = listContainer.scrollTop;
-        if (currentScrollTop > lastScrollTop) {
-          // downscroll code
-          // gsap.to(camera.position, {
-          //   x: camera.position.x + Math.sin(counter) * 5,
-          //   z: camera.position.z + Math.cos(counter) * 5,
-          //   duration: 1,
-          //   delay: 0,
-          // });
-        } else {
-          // upscroll code
-          // gsap.to(camera.position, {
-          //   x: camera.position.x - Math.sin(counter) * 5,
-          //   duration: 1,
-          //   delay: 0,
-          // });
-        }
-        lastScrollTop = currentScrollTop;
+
       });
     }
 
-
+    const mouse = new THREE.Vector2();
     // Animations
     const clock = new THREE.Clock();
+    let currentIntersect: null | THREE.Intersection = null;
     const tick = () => {
       const elapsedTime = clock.getElapsedTime();
 
@@ -364,12 +366,47 @@ const HauntedHouse = () => {
       ghost3.position.y = Math.cos(elapsedTime * 3) + Math.sin(elapsedTime * 2.5);
 
       // Update camera
-      if (canWiggleCamera) {
-        camera.position.x = cameraInitialPosition.x + cursor.x;
-        camera.position.y = cameraInitialPosition.y + cursor.y;
+      // if (canWiggleCamera) {
+      //   camera.position.x = cameraInitialPosition.x + cursor.x;
+      //   camera.position.y = cameraInitialPosition.y + cursor.y;
+      // }
+
+       // Raycaster
+      const rayCasterObjects = [...graves.children];
+      const intersects = raycaster.intersectObjects(rayCasterObjects);
+      for (const object of rayCasterObjects) {
+        let obj = object as THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>;
+        obj.material.color.set('#b2b6b1');
       }
+      // for (const intersect of intersects) {
+      //   let sphereObj = intersect.object as THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>;
+      //   sphereObj.material.color.set('#0000ff');
+      // }
+      if (intersects.length > 0) {
+        let sphereObj = intersects[0].object as THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>;
+        sphereObj.material.color.set('#0000ff');
+      }
+
+      if (intersects.length) {
+        if (currentIntersect === null) {
+          console.log('mouse enter');
+        }
+        currentIntersect = intersects[0];
+      } else {
+        if (currentIntersect) {
+          console.log('mouse leave');
+        }
+        currentIntersect = null;
+      }
+      raycaster.setFromCamera(mouse, camera);
     };
     tick();
+
+    window.addEventListener('click', () => {
+      if (currentIntersect) {
+        console.log(currentIntersect.object.position);
+      }
+    });
   });
 
   return (
