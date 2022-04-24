@@ -6,9 +6,9 @@ const StaticContent = () => {
   return (
     <div className={styles['list-container']} id='list-container'>
       <div className={styles['list-item']} id='list-item'>
-        <h1>Haunted House</h1>
-        <FontAwesomeIcon size='3x' bounce={true} icon={faAngleDoubleUp} />
+        {/*<h1>Haunted House</h1>*/}
         <section className={styles.section1}>
+          <FontAwesomeIcon size='3x' bounce={true} icon={faAngleDoubleUp} />
           <p>
             As you scroll up,
           </p>

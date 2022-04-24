@@ -27,35 +27,34 @@ import graveColorTextureImage from '../../assets/textures/graves/StoneBricksBeig
 import graveNormalTextureImage from '../../assets/textures/graves/StoneBricksBeige015_NRM_1K.jpg';
 import graveAmbientOcclusionTextureImage from '../../assets/textures/graves/StoneBricksBeige015_AO_1K.jpg';
 
+// Fonts
+import typefaceFront from '../../assets/fonts/Cinzel ExtraBold_Regular.json';
+
 // Styles
 import styles from './index.module.scss';
 
 // Components
 import StaticContent from "./static";
+import {FontLoader} from "three/examples/jsm/loaders/FontLoader";
+import {TextGeometry} from "three/examples/jsm/geometries/TextGeometry";
 
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
 };
 
-enum GraveType {
-  Video,
-  Picture
-}
 
-const gui = new GUI();
-gui.close();
+const parameters = {
+  videoCount: 2,
+};
 
 const HauntedHouse = () => {
-
-  let canWiggleCamera = true;
-  let startSurroung = false;
-  const parameters = {
-    videoCount: 2,
-  };
   let currentVideoCount = 0;
 
   useEffect(() => {
+    const gui = new GUI();
+    gui.close();
+
     const textureLoader = new THREE.TextureLoader();
     // Load door textures
     const doorColorTexture = textureLoader.load(doorColorImage);
@@ -277,6 +276,59 @@ const HauntedHouse = () => {
     renderer.setSize(sizes.width, sizes.height);
     renderer.setClearColor('#262837');
 
+    // Raycaster
+    const raycaster = new THREE.Raycaster();
+
+    const cameraFocusPoint = new THREE.Mesh(
+      new THREE.BoxGeometry(0.3, 0.3, 0.3),
+      new THREE.MeshStandardMaterial({
+        color: 0xff0000,
+      })
+    );
+    cameraFocusPoint.position.z = 4;
+    cameraFocusPoint.position.y = 2;
+    cameraFocusPoint.position.x = 0;
+    cameraFocusPoint.visible = false;
+    scene.add(cameraFocusPoint);
+
+    // Texts
+    const fontLoader = new FontLoader();
+    const font = fontLoader.parse(typefaceFront);
+    const textGeometry = new TextGeometry(
+      'HAUNTED HOUSE',
+      {
+        font,
+        size: 0.55,
+        height: 0.2,
+        curveSegments: 64,
+        bevelEnabled: true,
+        bevelThickness: 0.03,
+        bevelSize: 0.02,
+        bevelOffset: 0,
+        bevelSegments: 64,
+      }
+    );
+    textGeometry.center();
+    const titleFonts = new THREE.Mesh(
+      textGeometry,
+      new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+      })
+    );
+    titleFonts.position.set(-2.62, 5, 5);
+    titleFonts.rotation.y = 0.15;
+    scene.add(titleFonts);
+
+    const textSpotLight = new THREE.SpotLight(0xffffff, 1, 10, 0.313, 0.25, 1.52);
+    textSpotLight.position.set(
+      titleFonts.position.x / 2,
+      titleFonts.position.y - 0.3,
+      titleFonts.position.z + 1
+    );
+    textSpotLight.target.position.y = titleFonts.position.y + 0.5;
+    scene.add(textSpotLight);
+    scene.add(textSpotLight.target);
+
     // Shadows
     renderer.shadowMap.enabled = true;
     moonLight.castShadow = true;
@@ -308,21 +360,6 @@ const HauntedHouse = () => {
     ghost3.shadow.camera.far = 7;
     // Shadow map algorithm
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-    // Raycaster
-    const raycaster = new THREE.Raycaster();
-
-    const cameraFocusPoint = new THREE.Mesh(
-      new THREE.BoxGeometry(0.3, 0.3, 0.3),
-      new THREE.MeshStandardMaterial({
-        color: 0xff0000,
-      })
-    );
-    cameraFocusPoint.position.z = 4;
-    cameraFocusPoint.position.y = 2;
-    cameraFocusPoint.position.x = 0;
-    cameraFocusPoint.visible = false;
-    scene.add(cameraFocusPoint);
 
     // Orbit controls
     // const orbitControls = new OrbitControls(camera, canvas);
@@ -356,19 +393,15 @@ const HauntedHouse = () => {
       renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
     });
 
-    let counter = 0;
     const listContainer = document.getElementById('list-container') as HTMLDivElement;
     let lastScrollTop = listContainer.scrollTop;
     if (listContainer) {
       listContainer.addEventListener('scroll', (e: Event) => {
-        console.log(lastScrollTop);
         lastScrollTop = listContainer.scrollTop;
-        if (lastScrollTop > 300) {
-          startSurroung = true;
-        }
       });
     }
 
+    // Animation
     console.log(-Math.cos(lastScrollTop / sizes.height * 0.7) * 3);
     const mouse = new THREE.Vector2();
     // Animations
@@ -399,6 +432,9 @@ const HauntedHouse = () => {
       ghost3.position.x = Math.sin(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.32));
       ghost3.position.z = Math.cos(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.5));
       ghost3.position.y = Math.cos(elapsedTime * 3) + Math.sin(elapsedTime * 2.5);
+
+       // Animation spotlight
+      textSpotLight.target.position.x = Math.sin(elapsedTime * 0.5) * 12 - 8;
 
       // Update camera
       camera.position.x = Math.sin(lastScrollTop / sizes.height * Math.PI / 2) * 10;
