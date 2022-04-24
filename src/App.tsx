@@ -17,6 +17,7 @@ import Particles from "./Components/Particles";
 import Galaxy from "./Components/Galaxy";
 import Raycaster from "./Components/Raycaster";
 import ScrollBasedAnimation from "./Components/ScrollBasedAnimation";
+import PhysicalWorld from "./Components/PhysicalWorld";
 
 function App() {
   return (
@@ -29,6 +30,9 @@ function App() {
             </Route>
             <Route path='/borderland'>
               <ScrollBasedAnimation />
+            </Route>
+            <Route path='/physical-world'>
+              <PhysicalWorld />
             </Route>
           </Switch>
         </Router>
