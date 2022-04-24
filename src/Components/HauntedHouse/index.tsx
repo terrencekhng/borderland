@@ -1,6 +1,7 @@
 import GUI from "lil-gui";
 import {useEffect, useState} from "react";
 import * as THREE from "three";
+import gsap from 'gsap';
 
 // Import texture resources
 // door textures
@@ -456,10 +457,23 @@ const HauntedHouse = () => {
             // Turn off
             // Video
             const videoPlane = currentGraveWithVideo[currentObject.name];
-            videoPlane.obj.geometry.dispose();
-            videoPlane.obj.material.dispose();
-            videoPlane.videoEl.pause();
-            scene.remove(videoPlane.obj);
+            const videoPlaneAnimation = [
+              gsap.to(videoPlane.obj.position, {
+                y: 0,
+                duration: 1,
+                ease: 'power2.outIn',
+              }),
+              gsap.to(videoPlane.obj.material, {
+                opacity: 0,
+                duration: 1,
+              })
+            ];
+            Promise.all(videoPlaneAnimation).then(() => {
+              videoPlane.obj.geometry.dispose();
+              videoPlane.obj.material.dispose();
+              videoPlane.videoEl.pause();
+              scene.remove(videoPlane.obj);
+            });
             currentVideoCount -= 1;
             // remove light
             videoPlane.light.dispose();
@@ -481,8 +495,19 @@ const HauntedHouse = () => {
                 transparent: true,
               })
             );
-            videoPlane.position.set(currentObject.position.x, currentObject.geometry.parameters.height + currentObject.position.y, currentObject.position.z);
+
+            videoPlane.position.set(currentObject.position.x, 0, currentObject.position.z);
+            videoPlane.material.opacity = 0;
             scene.add(videoPlane);
+            gsap.to(videoPlane.position, {
+              y: currentObject.geometry.parameters.height + currentObject.position.y,
+              duration: 1,
+              ease: 'power2.outIn',
+            });
+            gsap.to(videoPlane.material, {
+              opacity: 1,
+              duration: 1,
+            });
             video.play();
             currentVideoCount += 1;
             // Light
