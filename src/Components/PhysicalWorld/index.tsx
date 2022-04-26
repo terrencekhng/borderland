@@ -3,14 +3,9 @@ import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import CANNON from 'cannon';
 import GUI from 'lil-gui';
+import {debounce} from 'lodash';
 
 // Import environment maps
-import nx from '../../assets/textures/environmentMaps/0/nx.png';
-import ny from '../../assets/textures/environmentMaps/0/ny.png'
-import px from '../../assets/textures/environmentMaps/0/px.png'
-import py from '../../assets/textures/environmentMaps/0/py.png'
-import nz from '../../assets/textures/environmentMaps/0/nz.png'
-import pz from '../../assets/textures/environmentMaps/0/pz.png'
 
 const sizes = {
   width: window.innerWidth,
@@ -32,8 +27,29 @@ const PhysicalWorld = () => {
     const textureLoader = new THREE.TextureLoader();
     const cubeTextureLoader = new THREE.CubeTextureLoader();
     const environmentMapTexture = cubeTextureLoader.load([
-      px, nx, py, ny, pz, nz
+      require('../../assets/textures/environmentMaps/1/px.png'),
+      require('../../assets/textures/environmentMaps/1/nx.png'),
+      require('../../assets/textures/environmentMaps/1/py.png'),
+      require('../../assets/textures/environmentMaps/1/ny.png'),
+      require('../../assets/textures/environmentMaps/1/pz.png'),
+      require('../../assets/textures/environmentMaps/1/nz.png'),
     ]);
+
+    // Sounds
+    const maxImpactStrength = 10;
+    const impactStrengthThreshold = 1.6
+    const hitSound = new Audio(require('../../assets/sounds/hit.mp3'));
+    const playHitSound = (collision: CANNON.ICollisionEvent) => {
+      const impactStrength = collision.contact.getImpactVelocityAlongNormal();
+      if (impactStrength > impactStrengthThreshold) {
+        hitSound.volume = impactStrength * 1 / (maxImpactStrength - impactStrengthThreshold);
+        hitSound.currentTime = 0;
+        hitSound.play();
+      }
+    };
+    const playHitSoundDebounced = debounce(playHitSound, 100, {
+      leading: true,
+    });
 
     // Objects
     const plane = new THREE.Mesh(
@@ -66,6 +82,8 @@ const PhysicalWorld = () => {
     // Physics
     const world = new CANNON.World();
     world.gravity.set(0, -9.82, 0);
+    // Optimise the collision
+    world.broadphase = new CANNON.SAPBroadphase(world);
 
     // Materials
     const defaultMaterial = new CANNON.Material('default');
@@ -79,6 +97,7 @@ const PhysicalWorld = () => {
     );
     world.addContactMaterial(defaultContactMaterial);
     world.defaultContactMaterial = defaultContactMaterial;
+    world.allowSleep = true;
 
     // Floor
     const floorShape = new CANNON.Plane();
@@ -100,11 +119,11 @@ const PhysicalWorld = () => {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     // Utils
-    const objectToUpdate: {mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>, body: CANNON.Body}[] = [];
+    let objectToUpdate: {mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>, body: CANNON.Body}[] = [];
     const sphereGeometry = new THREE.SphereGeometry(1, 16, 16);
     const sphereMaterial = new THREE.MeshStandardMaterial({
-      metalness: 0.3,
-      roughness: 0.4,
+      metalness: 0.8,
+      roughness: 0.1,
       envMap: environmentMapTexture,
     });
     // Sphere creator
@@ -129,6 +148,7 @@ const PhysicalWorld = () => {
       body.position.x = position.x;
       body.position.y = position.y;
       body.position.z = position.z;
+      body.addEventListener('collide', playHitSoundDebounced);
       world.addBody(body);
 
       objectToUpdate.push({
@@ -167,6 +187,7 @@ const PhysicalWorld = () => {
       body.position.x = position.x;
       body.position.y = position.y;
       body.position.z = position.z;
+      body.addEventListener('collide', playHitSoundDebounced);
       world.addBody(body);
 
       objectToUpdate.push({
@@ -217,6 +238,7 @@ const PhysicalWorld = () => {
       renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
     });
 
+
     // Debug
     const debugObject = {
       createSphere: () => {
@@ -240,10 +262,19 @@ const PhysicalWorld = () => {
             (Math.random() - 0.5) * 3
           )
         )
-      }
+      },
+      reset: () => {
+        for (const obj of objectToUpdate) {
+          obj.body.removeEventListener('collide', playHitSoundDebounced);
+          world.remove(obj.body);
+          scene.remove(obj.mesh);
+        }
+        objectToUpdate = [];
+      },
     };
     gui.add(debugObject, 'createSphere');
     gui.add(debugObject, 'createBox');
+    gui.add(debugObject, 'reset');
   });
 
   return (
