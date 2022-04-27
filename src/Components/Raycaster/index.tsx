@@ -103,11 +103,11 @@ const Raycaster = () => {
       const objectsToTest = [object1, object2, object3];
       const intersects = raycaster.intersectObjects(objectsToTest);
       for (const object of objectsToTest) {
-        let obj = object as THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>;
+        const obj = object as THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>;
         obj.material.color.set('#ff0000');
       }
       for (const intersect of intersects) {
-        let sphereObj = intersect.object as THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>;
+        const sphereObj = intersect.object as THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>;
         sphereObj.material.color.set('#0000ff');
       }
       if (intersects.length) {

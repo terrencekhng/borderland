@@ -21,9 +21,12 @@
     "@types/three": "^0.139.0",
     "cannon": "^0.6.2",
     "gsap": "^3.10.3",
+    "husky": "^7.0.4",
     "lil-gui": "^0.16.1",
+    "lint-staged": "^12.4.1",
     "lodash": "^4.17.21",
     "node-sass": "^7.0.1",
+    "prettier": "^2.6.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "5",
@@ -56,5 +59,16 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "."
+  "homepage": ".",
+  "devDependencies": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
+  }
 }

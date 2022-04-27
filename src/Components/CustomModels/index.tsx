@@ -2,6 +2,7 @@ import {useEffect} from "react";
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import GUI from "lil-gui";
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 
 const sizes = {
   width: window.innerWidth,
@@ -21,6 +22,7 @@ const CustomModels = () => {
     scene.add(camera);
 
     const textureLoader = new THREE.TextureLoader();
+
 
     // Models
     // Plane

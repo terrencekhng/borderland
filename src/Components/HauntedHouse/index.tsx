@@ -459,12 +459,12 @@ const HauntedHouse = () => {
       const rayCasterObjects = [...graves.children];
       const intersects = raycaster.intersectObjects(rayCasterObjects);
       for (const object of rayCasterObjects) {
-        let obj = object as THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>;
+        const obj = object as THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>;
         obj.material.color.set('#b2b6b1');
       }
 
       if (intersects.length > 0) {
-        let sphereObj = intersects[0].object as THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>;
+        const sphereObj = intersects[0].object as THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>;
         sphereObj.material.color.set('rgb(213,215,210)');
       }
 
