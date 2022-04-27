@@ -1,9 +1,9 @@
-import { useEffect } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import GUI from "lil-gui";
+import { useEffect } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import GUI from 'lil-gui';
 
-import particleTextureImage from "../../assets/textures/particles/2.png";
+import particleTextureImage from '../../assets/textures/particles/2.png';
 
 const sizes = {
   width: window.innerWidth,
@@ -21,7 +21,7 @@ const Particles = () => {
       75,
       sizes.width / sizes.height,
       0.1,
-      1000
+      1000,
     );
     camera.position.z = 3;
     // camera.lookAt(group.position);
@@ -44,12 +44,12 @@ const Particles = () => {
       colors[i] = Math.random();
     }
     particlesGeometry.setAttribute(
-      "position",
-      new THREE.BufferAttribute(position, 3)
+      'position',
+      new THREE.BufferAttribute(position, 3),
     );
     particlesGeometry.setAttribute(
-      "color",
-      new THREE.BufferAttribute(colors, 3)
+      'color',
+      new THREE.BufferAttribute(colors, 3),
     );
 
     // Material
@@ -68,7 +68,7 @@ const Particles = () => {
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particles);
 
-    const canvas = document.getElementById("lights") as HTMLCanvasElement;
+    const canvas = document.getElementById('lights') as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
     });
@@ -96,7 +96,7 @@ const Particles = () => {
     };
     tick();
 
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 

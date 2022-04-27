@@ -1,9 +1,9 @@
-import { useEffect } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import CANNON from "cannon";
-import GUI from "lil-gui";
-import { debounce } from "lodash";
+import { useEffect } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import CANNON from 'cannon';
+import GUI from 'lil-gui';
+import { debounce } from 'lodash';
 
 // Import environment maps
 
@@ -23,7 +23,7 @@ const PhysicalWorld = () => {
       75,
       sizes.width / sizes.height,
       0.1,
-      1000
+      1000,
     );
     camera.position.set(-3, 3, 3);
     // camera.lookAt(group.position);
@@ -32,18 +32,18 @@ const PhysicalWorld = () => {
     const textureLoader = new THREE.TextureLoader();
     const cubeTextureLoader = new THREE.CubeTextureLoader();
     const environmentMapTexture = cubeTextureLoader.load([
-      require("../../assets/textures/environmentMaps/1/px.png"),
-      require("../../assets/textures/environmentMaps/1/nx.png"),
-      require("../../assets/textures/environmentMaps/1/py.png"),
-      require("../../assets/textures/environmentMaps/1/ny.png"),
-      require("../../assets/textures/environmentMaps/1/pz.png"),
-      require("../../assets/textures/environmentMaps/1/nz.png"),
+      require('../../assets/textures/environmentMaps/1/px.png'),
+      require('../../assets/textures/environmentMaps/1/nx.png'),
+      require('../../assets/textures/environmentMaps/1/py.png'),
+      require('../../assets/textures/environmentMaps/1/ny.png'),
+      require('../../assets/textures/environmentMaps/1/pz.png'),
+      require('../../assets/textures/environmentMaps/1/nz.png'),
     ]);
 
     // Sounds
     const maxImpactStrength = 10;
     const impactStrengthThreshold = 1.6;
-    const hitSound = new Audio(require("../../assets/sounds/hit.mp3"));
+    const hitSound = new Audio(require('../../assets/sounds/hit.mp3'));
     const playHitSound = (collision: CANNON.ICollisionEvent) => {
       const impactStrength = collision.contact.getImpactVelocityAlongNormal();
       if (impactStrength > impactStrengthThreshold) {
@@ -61,10 +61,10 @@ const PhysicalWorld = () => {
     const plane = new THREE.Mesh(
       new THREE.PlaneGeometry(10, 10),
       new THREE.MeshStandardMaterial({
-        color: "#777777",
+        color: '#777777',
         metalness: 0.3,
         roughness: 0.4,
-      })
+      }),
     );
     plane.receiveShadow = true;
     plane.rotation.x = -Math.PI / 2;
@@ -92,14 +92,14 @@ const PhysicalWorld = () => {
     world.broadphase = new CANNON.SAPBroadphase(world);
 
     // Materials
-    const defaultMaterial = new CANNON.Material("default");
+    const defaultMaterial = new CANNON.Material('default');
     const defaultContactMaterial = new CANNON.ContactMaterial(
       defaultMaterial,
       defaultMaterial,
       {
         friction: 0.1,
         restitution: 0.7,
-      }
+      },
     );
     world.addContactMaterial(defaultContactMaterial);
     world.defaultContactMaterial = defaultContactMaterial;
@@ -112,13 +112,13 @@ const PhysicalWorld = () => {
     });
     floorBody.quaternion.setFromAxisAngle(
       new CANNON.Vec3(-1, 0, 0),
-      Math.PI / 2
+      Math.PI / 2,
     );
     floorBody.addShape(floorShape);
     world.addBody(floorBody);
 
     const canvas = document.getElementById(
-      "physical-world"
+      'physical-world',
     ) as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -159,7 +159,7 @@ const PhysicalWorld = () => {
       body.position.x = position.x;
       body.position.y = position.y;
       body.position.z = position.z;
-      body.addEventListener("collide", playHitSoundDebounced);
+      body.addEventListener('collide', playHitSoundDebounced);
       world.addBody(body);
 
       objectToUpdate.push({
@@ -180,7 +180,7 @@ const PhysicalWorld = () => {
       width: number,
       height: number,
       depth: number,
-      position: THREE.Vector3
+      position: THREE.Vector3,
     ) => {
       const mesh = new THREE.Mesh(boxGeometry, boxMaterial);
       mesh.scale.set(width, height, depth);
@@ -190,7 +190,7 @@ const PhysicalWorld = () => {
 
       // Physical
       const shape = new CANNON.Box(
-        new CANNON.Vec3(width / 2, height / 2, depth / 2)
+        new CANNON.Vec3(width / 2, height / 2, depth / 2),
       );
       const body = new CANNON.Body({
         shape,
@@ -202,7 +202,7 @@ const PhysicalWorld = () => {
       body.position.x = position.x;
       body.position.y = position.y;
       body.position.z = position.z;
-      body.addEventListener("collide", playHitSoundDebounced);
+      body.addEventListener('collide', playHitSoundDebounced);
       world.addBody(body);
 
       objectToUpdate.push({
@@ -242,7 +242,7 @@ const PhysicalWorld = () => {
     };
     tick();
 
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 
@@ -261,8 +261,8 @@ const PhysicalWorld = () => {
           new THREE.Vector3(
             (Math.random() - 0.5) * 3,
             3,
-            (Math.random() - 0.5) * 3
-          )
+            (Math.random() - 0.5) * 3,
+          ),
         );
       },
       createBox: () => {
@@ -273,22 +273,22 @@ const PhysicalWorld = () => {
           new THREE.Vector3(
             (Math.random() - 0.5) * 3,
             3,
-            (Math.random() - 0.5) * 3
-          )
+            (Math.random() - 0.5) * 3,
+          ),
         );
       },
       reset: () => {
         for (const obj of objectToUpdate) {
-          obj.body.removeEventListener("collide", playHitSoundDebounced);
+          obj.body.removeEventListener('collide', playHitSoundDebounced);
           world.remove(obj.body);
           scene.remove(obj.mesh);
         }
         objectToUpdate = [];
       },
     };
-    gui.add(debugObject, "createSphere");
-    gui.add(debugObject, "createBox");
-    gui.add(debugObject, "reset");
+    gui.add(debugObject, 'createSphere');
+    gui.add(debugObject, 'createBox');
+    gui.add(debugObject, 'reset');
   });
 
   return (

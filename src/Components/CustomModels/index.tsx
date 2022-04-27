@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import GUI from "lil-gui";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { useEffect } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import GUI from 'lil-gui';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const sizes = {
   width: window.innerWidth,
@@ -20,7 +20,7 @@ const CustomModels = () => {
       75,
       sizes.width / sizes.height,
       0.1,
-      1000
+      1000,
     );
     camera.position.set(2, 2, 2);
     // camera.lookAt(group.position);
@@ -33,10 +33,10 @@ const CustomModels = () => {
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(10, 10),
       new THREE.MeshStandardMaterial({
-        color: "#444444",
+        color: '#444444',
         metalness: 0,
         roughness: 0.5,
-      })
+      }),
     );
     floor.receiveShadow = true;
     floor.rotation.x = -Math.PI * 0.5;
@@ -57,7 +57,7 @@ const CustomModels = () => {
     scene.add(directionalLight);
 
     const canvas = document.getElementById(
-      "custom-models"
+      'custom-models',
     ) as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -83,7 +83,7 @@ const CustomModels = () => {
     };
     tick();
 
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 

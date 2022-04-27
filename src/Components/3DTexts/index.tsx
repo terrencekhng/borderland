@@ -1,12 +1,12 @@
-import * as THREE from "three";
-import { useEffect } from "react";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
-import typefaceFront from "../../assets/fonts/helvetiker_bold.typeface.json";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import * as THREE from 'three';
+import { useEffect } from 'react';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+import typefaceFront from '../../assets/fonts/helvetiker_bold.typeface.json';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 
 // Import textures
-import matcapTextureImage from "../../assets/textures/matcaps/8.png";
+import matcapTextureImage from '../../assets/textures/matcaps/8.png';
 
 const sizes = {
   width: window.innerWidth,
@@ -23,7 +23,7 @@ const ThreeDTexts = () => {
       75,
       sizes.width / sizes.height,
       0.1,
-      1000
+      1000,
     );
     camera.position.x = 1;
     camera.position.y = 1;
@@ -41,11 +41,11 @@ const ThreeDTexts = () => {
       new THREE.SphereGeometry(1, 64, 64),
       new THREE.MeshStandardMaterial({
         color: 0xff0000,
-      })
+      }),
     );
     // group.add(mesh);
 
-    console.time("donut");
+    console.time('donut');
     const donutGeometry = new THREE.TorusBufferGeometry(0.3, 0.2, 20, 45);
     const matcapMaterial = new THREE.MeshMatcapMaterial({
       matcap: matcapTexture,
@@ -64,12 +64,12 @@ const ThreeDTexts = () => {
 
       scene.add(donut);
     }
-    console.timeEnd("donut");
+    console.timeEnd('donut');
 
     // Texts
     const fontLoader = new FontLoader();
     const font = fontLoader.parse(typefaceFront);
-    const textGeometry = new TextGeometry("Hi Terence", {
+    const textGeometry = new TextGeometry('Hi Terence', {
       font,
       size: 0.5,
       height: 0.2,
@@ -95,11 +95,11 @@ const ThreeDTexts = () => {
       // new THREE.MeshBasicMaterial({
       //   wireframe: true,
       // })
-      matcapMaterial
+      matcapMaterial,
     );
     scene.add(textMaterial);
 
-    const canvas = document.getElementById("threed-texts") as HTMLCanvasElement;
+    const canvas = document.getElementById('threed-texts') as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
     });
@@ -118,7 +118,7 @@ const ThreeDTexts = () => {
     };
     tick();
 
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 

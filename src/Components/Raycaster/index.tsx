@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import GUI from "lil-gui";
+import { useEffect } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import GUI from 'lil-gui';
 
 const sizes = {
   width: window.innerWidth,
@@ -19,7 +19,7 @@ const Raycaster = () => {
       75,
       sizes.width / sizes.height,
       0.1,
-      1000
+      1000,
     );
     camera.position.z = 5;
     // camera.lookAt(group.position);
@@ -30,18 +30,18 @@ const Raycaster = () => {
     // Objects
     const object1 = new THREE.Mesh(
       new THREE.SphereGeometry(0.5, 16, 16),
-      new THREE.MeshBasicMaterial({ color: "#ff0000" })
+      new THREE.MeshBasicMaterial({ color: '#ff0000' }),
     );
     object1.position.x = -2;
 
     const object2 = new THREE.Mesh(
       new THREE.SphereGeometry(0.5, 16, 16),
-      new THREE.MeshBasicMaterial({ color: "#ff0000" })
+      new THREE.MeshBasicMaterial({ color: '#ff0000' }),
     );
 
     const object3 = new THREE.Mesh(
       new THREE.SphereGeometry(0.5, 16, 16),
-      new THREE.MeshBasicMaterial({ color: "#ff0000" })
+      new THREE.MeshBasicMaterial({ color: '#ff0000' }),
     );
     object3.position.x = 2;
 
@@ -50,7 +50,7 @@ const Raycaster = () => {
     // Raycaster
     const raycaster = new THREE.Raycaster();
 
-    const canvas = document.getElementById("raycaster") as HTMLCanvasElement;
+    const canvas = document.getElementById('raycaster') as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
     });
@@ -65,7 +65,7 @@ const Raycaster = () => {
     orbitControls.enableDamping = true;
     orbitControls.zoomSpeed = 0.5;
 
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 
@@ -77,7 +77,7 @@ const Raycaster = () => {
     });
 
     const mouse = new THREE.Vector2();
-    window.addEventListener("mousemove", (e: MouseEvent) => {
+    window.addEventListener('mousemove', (e: MouseEvent) => {
       mouse.x = (e.clientX / sizes.width) * 2 - 1;
       mouse.y = -((e.clientY / sizes.height) * 2 - 1);
     });
@@ -107,23 +107,23 @@ const Raycaster = () => {
           THREE.SphereGeometry,
           THREE.MeshBasicMaterial
         >;
-        obj.material.color.set("#ff0000");
+        obj.material.color.set('#ff0000');
       }
       for (const intersect of intersects) {
         const sphereObj = intersect.object as THREE.Mesh<
           THREE.SphereGeometry,
           THREE.MeshBasicMaterial
         >;
-        sphereObj.material.color.set("#0000ff");
+        sphereObj.material.color.set('#0000ff');
       }
       if (intersects.length) {
         if (currentIntersect === null) {
-          console.log("mouse enter");
+          console.log('mouse enter');
         }
         currentIntersect = intersects[0];
       } else {
         if (currentIntersect) {
-          console.log("mouse leave");
+          console.log('mouse leave');
         }
         currentIntersect = null;
       }
@@ -131,16 +131,16 @@ const Raycaster = () => {
     };
     tick();
 
-    window.addEventListener("click", () => {
+    window.addEventListener('click', () => {
       if (currentIntersect) {
         if (currentIntersect.object === object1) {
-          console.log("click on object1");
+          console.log('click on object1');
         }
         if (currentIntersect.object === object2) {
-          console.log("click on object2");
+          console.log('click on object2');
         }
         if (currentIntersect.object === object3) {
-          console.log("click on object3");
+          console.log('click on object3');
         }
       }
     });

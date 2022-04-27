@@ -1,24 +1,24 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { gsap } from "gsap";
-import { useEffect, useRef, useState } from "react";
-import GUI from "lil-gui";
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { gsap } from 'gsap';
+import { useEffect, useRef, useState } from 'react';
+import GUI from 'lil-gui';
 
 // Styles
-import styles from "./index.module.css";
-import { MeshBasicMaterial } from "three";
+import styles from './index.module.css';
+import { MeshBasicMaterial } from 'three';
 
 // Imports texture resources
 // import doorColorImage from '../../assets/textures/door/color.jpg';
 // import doorColorImage from '../../assets/textures/checkerboard-1024x1024.png';
 // import doorColorImage from '../../assets/textures/checkerboard-8x8.png';
-import doorColorImage from "../../assets/textures/minecraft.png";
-import doorAlphaImage from "../../assets/textures/door/alpha.jpg";
-import doorHeightImage from "../../assets/textures/door/height.jpg";
-import doorNormalImage from "../../assets/textures/door/normal.jpg";
-import doorAmbientOcclusionImage from "../../assets/textures/door/ambientOcclusion.jpg";
-import doorMetalnessImage from "../../assets/textures/door/metalness.jpg";
-import doorRoughnessImage from "../../assets/textures/door/roughness.jpg";
+import doorColorImage from '../../assets/textures/minecraft.png';
+import doorAlphaImage from '../../assets/textures/door/alpha.jpg';
+import doorHeightImage from '../../assets/textures/door/height.jpg';
+import doorNormalImage from '../../assets/textures/door/normal.jpg';
+import doorAmbientOcclusionImage from '../../assets/textures/door/ambientOcclusion.jpg';
+import doorMetalnessImage from '../../assets/textures/door/metalness.jpg';
+import doorRoughnessImage from '../../assets/textures/door/roughness.jpg';
 
 // Debug
 const gui = new GUI();
@@ -46,16 +46,16 @@ const Welcome = () => {
     // image.src = doorColorImage;
     const loadingManager = new THREE.LoadingManager();
     loadingManager.onStart = () => {
-      console.log("onStart");
+      console.log('onStart');
     };
     loadingManager.onProgress = () => {
-      console.log("onProgress");
+      console.log('onProgress');
     };
     loadingManager.onLoad = () => {
-      console.log("onLoaded");
+      console.log('onLoaded');
     };
     loadingManager.onError = () => {
-      console.error("onError");
+      console.error('onError');
     };
     const textureLoader = new THREE.TextureLoader(loadingManager);
     const doorColorTexture = textureLoader.load(doorColorImage);
@@ -63,7 +63,7 @@ const Welcome = () => {
     const doorHeightTexture = textureLoader.load(doorHeightImage);
     const doorNormalTexture = textureLoader.load(doorNormalImage);
     const doorAmbientOcclusionTexture = textureLoader.load(
-      doorAmbientOcclusionImage
+      doorAmbientOcclusionImage,
     );
     const doorMetalnessTexture = textureLoader.load(doorMetalnessImage);
     const doorRoughnessTexture = textureLoader.load(doorRoughnessImage);
@@ -91,7 +91,7 @@ const Welcome = () => {
       // new THREE.SphereGeometry(1, 32, 32),
       new THREE.MeshBasicMaterial({
         map: doorColorTexture,
-      })
+      }),
     );
     group.add(cube1);
 
@@ -99,7 +99,7 @@ const Welcome = () => {
       new THREE.BoxGeometry(1, 1, 1),
       new THREE.MeshBasicMaterial({
         map: doorColorTexture,
-      })
+      }),
     );
     cube2.position.set(-2, 0, 0);
     group.add(cube2);
@@ -135,13 +135,13 @@ const Welcome = () => {
 
     // 3. Add buffer attribute to buffer geometry
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", positionsAttribute);
+    geometry.setAttribute('position', positionsAttribute);
     const geometryMaterial = new THREE.Mesh(
       geometry,
       new MeshBasicMaterial({
         color: 0xff0000,
         wireframe: true,
-      })
+      }),
     );
     geometryMaterial.position.x = 1;
     scene.add(geometryMaterial);
@@ -175,7 +175,7 @@ const Welcome = () => {
       75,
       sizes.width / sizes.height,
       0.1,
-      1000
+      1000,
     );
     // const aspectRatio = sizes.width / sizes.height;
     // const camera = new THREE.OrthographicCamera(
@@ -191,7 +191,7 @@ const Welcome = () => {
     // camera.position.x = 1;
     scene.add(camera);
 
-    const canvas = document.getElementById("webgl") as HTMLCanvasElement;
+    const canvas = document.getElementById('webgl') as HTMLCanvasElement;
 
     // Orbit controls
     const orbitControls = new OrbitControls(camera, canvas);
@@ -234,13 +234,13 @@ const Welcome = () => {
     };
 
     // Mouse event
-    window.addEventListener("mousemove", (e: MouseEvent) => {
+    window.addEventListener('mousemove', (e: MouseEvent) => {
       cursor.x = e.clientX / sizes.width - 0.5;
       cursor.y = e.clientY / sizes.height - 0.5;
     });
 
     // Handle resize
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       // Update sizes
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
@@ -255,29 +255,29 @@ const Welcome = () => {
     });
 
     // Handle fullscreen
-    window.addEventListener("dblclick", () => {
+    window.addEventListener('dblclick', () => {
       const fullscreenElement = document.fullscreenElement;
 
       if (!fullscreenElement) {
-        if (canvas["requestFullscreen"]) {
+        if (canvas['requestFullscreen']) {
           canvas
             .requestFullscreen()
             .then(() => {
-              console.log("Enter fullscreen succeeded");
+              console.log('Enter fullscreen succeeded');
             })
             .catch(() => {
-              console.info("Enter fullscreen failed");
+              console.info('Enter fullscreen failed');
             });
         }
       } else {
-        if (document["exitFullscreen"]) {
+        if (document['exitFullscreen']) {
           document
             .exitFullscreen()
             .then(() => {
-              console.log("Leave fullscreen succeeded");
+              console.log('Leave fullscreen succeeded');
             })
             .catch(() => {
-              console.info("Leave fullscreen failed");
+              console.info('Leave fullscreen failed');
             });
         }
       }
@@ -344,15 +344,15 @@ const Welcome = () => {
 
     // GSAP
     gsap.to(boxRef.current, {
-      rotation: "+=360",
+      rotation: '+=360',
     });
 
     tl.current = gsap
       .timeline()
-      .to(q(".box1"), {
+      .to(q('.box1'), {
         rotate: 360,
       })
-      .to(q(".circle1"), {
+      .to(q('.circle1'), {
         x: 100,
       });
   }, []);

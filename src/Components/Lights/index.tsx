@@ -1,13 +1,13 @@
-import { useEffect } from "react";
-import * as THREE from "three";
-import GUI from "lil-gui";
+import { useEffect } from 'react';
+import * as THREE from 'three';
+import GUI from 'lil-gui';
 
-import matcapTextureImage from "../../assets/textures/matcaps/8.png";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
-import typefaceFront from "../../assets/fonts/helvetiker_bold.typeface.json";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
+import matcapTextureImage from '../../assets/textures/matcaps/8.png';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import typefaceFront from '../../assets/fonts/helvetiker_bold.typeface.json';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper';
 
 const sizes = {
   width: window.innerWidth,
@@ -27,7 +27,7 @@ const Lights = () => {
       75,
       sizes.width / sizes.height,
       0.1,
-      1000
+      1000,
     );
     camera.position.x = 1;
     camera.position.y = 1;
@@ -44,20 +44,20 @@ const Lights = () => {
     // Objects
     const sphere = new THREE.Mesh(
       new THREE.SphereGeometry(0.5, 32, 32),
-      material
+      material,
     );
     sphere.position.x = -1.5;
     scene.add(sphere);
 
     const box = new THREE.Mesh(
       new THREE.BoxGeometry(0.75, 0.75, 0.75, 16, 16, 16),
-      material
+      material,
     );
     scene.add(box);
 
     const torus = new THREE.Mesh(
       new THREE.TorusGeometry(0.3, 0.2, 64, 64),
-      material
+      material,
     );
     torus.position.x = 1.5;
     scene.add(torus);
@@ -71,18 +71,18 @@ const Lights = () => {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
     gui
-      .add(ambientLight, "intensity")
+      .add(ambientLight, 'intensity')
       .min(0)
       .max(1)
       .step(0.001)
-      .name("Ambient light");
+      .name('Ambient light');
 
     const directionalLight = new THREE.DirectionalLight(0x00fffc, 0.3);
     directionalLight.position.set(1, 0.25, 0);
     scene.add(directionalLight);
     const directionLightHelper = new THREE.DirectionalLightHelper(
       directionalLight,
-      0.2
+      0.2,
     );
     scene.add(directionLightHelper);
     // gui.add(directionalLight, 'intensity').min(0).max(1).step(0.001).name('Directional light');
@@ -109,7 +109,7 @@ const Lights = () => {
       10,
       Math.PI * 0.08,
       0.25,
-      1
+      1,
     );
     spotLight.position.set(0, 2, 3);
     spotLight.target.position.x = -0.75;
@@ -124,11 +124,11 @@ const Lights = () => {
     // Helpers
     const hemisphereLightHelper = new THREE.HemisphereLightHelper(
       hemisphereLight,
-      0.2
+      0.2,
     );
     scene.add(hemisphereLightHelper);
 
-    const canvas = document.getElementById("lights") as HTMLCanvasElement;
+    const canvas = document.getElementById('lights') as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
     });
@@ -158,7 +158,7 @@ const Lights = () => {
     };
     tick();
 
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 

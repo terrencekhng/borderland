@@ -1,12 +1,12 @@
-import GUI from "lil-gui";
-import { useEffect } from "react";
-import * as THREE from "three";
-import styles from "./index.module.css";
-import gsap from "gsap";
+import GUI from 'lil-gui';
+import { useEffect } from 'react';
+import * as THREE from 'three';
+import styles from './index.module.css';
+import gsap from 'gsap';
 
 // Textures
-import gradientTextureImage from "../../assets/textures/gradients/3.jpg";
-import particleTextureImage from "../../assets/textures/particles/2.png";
+import gradientTextureImage from '../../assets/textures/gradients/3.jpg';
+import particleTextureImage from '../../assets/textures/particles/2.png';
 
 const sizes = {
   width: window.innerWidth,
@@ -30,7 +30,7 @@ const ScrollBasedAnimation = () => {
       35,
       sizes.width / sizes.height,
       0.1,
-      1000
+      1000,
     );
     camera.position.z = 6;
     cameraGroup.add(camera);
@@ -52,21 +52,21 @@ const ScrollBasedAnimation = () => {
       new THREE.MeshToonMaterial({
         color: 0xaa6939,
         gradientMap: gradientTexture,
-      })
+      }),
     );
     const mesh2 = new THREE.Mesh(
       new THREE.ConeGeometry(1, 2, 32),
       new THREE.MeshToonMaterial({
         color: 0xaa9539,
         gradientMap: gradientTexture,
-      })
+      }),
     );
     const mesh3 = new THREE.Mesh(
       new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
       new THREE.MeshToonMaterial({
         color: 0x3e3175,
         gradientMap: gradientTexture,
-      })
+      }),
     );
 
     mesh1.position.y = -objectsDistance * 0;
@@ -93,12 +93,12 @@ const ScrollBasedAnimation = () => {
     }
     const particlesGeometry = new THREE.BufferGeometry();
     particlesGeometry.setAttribute(
-      "position",
-      new THREE.BufferAttribute(positions, 3)
+      'position',
+      new THREE.BufferAttribute(positions, 3),
     );
     particlesGeometry.setAttribute(
-      "color",
-      new THREE.BufferAttribute(colors, 3)
+      'color',
+      new THREE.BufferAttribute(colors, 3),
     );
 
     const particlesMaterial = new THREE.PointsMaterial({
@@ -122,7 +122,7 @@ const ScrollBasedAnimation = () => {
     scene.add(ambientLight);
 
     const canvas = document.getElementById(
-      "scroll-animation"
+      'scroll-animation',
     ) as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -142,17 +142,17 @@ const ScrollBasedAnimation = () => {
     // Scroll
     let scrollY = window.scrollY;
     let currentSection = 0;
-    window.addEventListener("scroll", (e: Event) => {
+    window.addEventListener('scroll', (e: Event) => {
       scrollY = window.scrollY;
       const newSection = Math.round(scrollY / sizes.height);
       if (newSection !== currentSection) {
         currentSection = newSection;
         gsap.to(sectionMeshes[currentSection].rotation, {
           duration: 1.5,
-          ease: "power2.inOut",
-          x: "+=6",
-          y: "+=3",
-          z: "+=1.5",
+          ease: 'power2.inOut',
+          x: '+=6',
+          y: '+=3',
+          z: '+=1.5',
         });
       }
     });
@@ -162,7 +162,7 @@ const ScrollBasedAnimation = () => {
       x: 0,
       y: 0,
     };
-    window.addEventListener("mousemove", (e: MouseEvent) => {
+    window.addEventListener('mousemove', (e: MouseEvent) => {
       cursor.x = e.clientX / sizes.width - 0.5;
       cursor.y = e.clientY / sizes.height - 0.5;
     });
@@ -205,7 +205,7 @@ const ScrollBasedAnimation = () => {
     };
     tick();
 
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 
@@ -217,7 +217,7 @@ const ScrollBasedAnimation = () => {
     });
 
     // Debug
-    gui.addColor(parameter, "materialColor").onChange(() => {
+    gui.addColor(parameter, 'materialColor').onChange(() => {
       material.color.set(parameter.materialColor);
       particlesMaterial.color.set(parameter.materialColor);
     });
@@ -244,7 +244,7 @@ const ScrollBasedAnimation = () => {
       </section>
       <canvas
         id="scroll-animation"
-        className={styles["scroll-animation"]}
+        className={styles['scroll-animation']}
       ></canvas>
     </>
   );

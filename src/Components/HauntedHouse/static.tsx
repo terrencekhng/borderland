@@ -1,15 +1,15 @@
-import styles from "./index.module.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import styles from './index.module.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faAngleDoubleDown,
   faAngleDoubleUp,
   faFaceSmileWink,
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 
 const StaticContent = () => {
   return (
-    <div className={styles["list-container"]} id="list-container">
-      <div className={styles["list-item"]} id="list-item">
+    <div className={styles['list-container']} id="list-container">
+      <div className={styles['list-item']} id="list-item">
         {/*<h1>Haunted House</h1>*/}
         <section className={styles.section1}>
           <FontAwesomeIcon size="3x" bounce={true} icon={faAngleDoubleUp} />

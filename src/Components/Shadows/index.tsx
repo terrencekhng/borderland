@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import GUI from "lil-gui";
+import { useEffect } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import GUI from 'lil-gui';
 
 // Import shadows
-import bakedShadowImage from "../../assets/shadows/bakedShadow.jpg";
-import simpleShadowImage from "../../assets/shadows/simpleShadow.jpg";
+import bakedShadowImage from '../../assets/shadows/bakedShadow.jpg';
+import simpleShadowImage from '../../assets/shadows/simpleShadow.jpg';
 
 const sizes = {
   width: window.innerWidth,
@@ -23,7 +23,7 @@ const Shadows = () => {
       75,
       sizes.width / sizes.height,
       0.1,
-      1000
+      1000,
     );
     camera.position.x = 1;
     camera.position.y = 1;
@@ -39,13 +39,13 @@ const Shadows = () => {
     const material = new THREE.MeshStandardMaterial();
     material.roughness = 0.7;
     material.roughness = 0.7;
-    gui.add(material, "metalness").min(0).max(1).step(0.001);
-    gui.add(material, "roughness").min(0).max(1).step(0.001);
+    gui.add(material, 'metalness').min(0).max(1).step(0.001);
+    gui.add(material, 'roughness').min(0).max(1).step(0.001);
 
     // Objects
     const sphere = new THREE.Mesh(
       new THREE.SphereGeometry(0.5, 32, 32),
-      material
+      material,
     );
     sphere.castShadow = true;
     scene.add(sphere);
@@ -53,7 +53,7 @@ const Shadows = () => {
     // Plane
     const plane = new THREE.Mesh(
       new THREE.PlaneGeometry(5, 5),
-      material
+      material,
       // new THREE.MeshBasicMaterial({
       //   map: bakedShadow,
       // })
@@ -69,7 +69,7 @@ const Shadows = () => {
         color: 0x000000,
         alphaMap: simpleShadow,
         transparent: true,
-      })
+      }),
     );
     sphereShadow.rotation.x = -Math.PI / 2;
     sphereShadow.position.y = plane.position.y + 0.01;
@@ -78,7 +78,7 @@ const Shadows = () => {
     // Lights
     // Ambient light
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-    gui.add(ambientLight, "intensity").min(0).max(1).step(0.001);
+    gui.add(ambientLight, 'intensity').min(0).max(1).step(0.001);
     scene.add(ambientLight);
 
     // Directional light
@@ -97,14 +97,14 @@ const Shadows = () => {
     directionalLight.shadow.camera.left = -2;
     // Shadow blur
     // directionalLight.shadow.radius = 10;
-    gui.add(directionalLight, "intensity").min(0).max(1).step(0.001);
-    gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001);
-    gui.add(directionalLight.position, "y").min(-5).max(5).step(0.001);
-    gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001);
+    gui.add(directionalLight, 'intensity').min(0).max(1).step(0.001);
+    gui.add(directionalLight.position, 'x').min(-5).max(5).step(0.001);
+    gui.add(directionalLight.position, 'y').min(-5).max(5).step(0.001);
+    gui.add(directionalLight.position, 'z').min(-5).max(5).step(0.001);
     scene.add(directionalLight);
     // Light camera helper
     const directionalLightCameraHelper = new THREE.CameraHelper(
-      directionalLight.shadow.camera
+      directionalLight.shadow.camera,
     );
     directionalLightCameraHelper.visible = false;
     scene.add(directionalLightCameraHelper);
@@ -121,7 +121,7 @@ const Shadows = () => {
     scene.add(spotLight);
     scene.add(spotLight.target);
     const spotLightCameraHelper = new THREE.CameraHelper(
-      spotLight.shadow.camera
+      spotLight.shadow.camera,
     );
     spotLightCameraHelper.visible = false;
     scene.add(spotLightCameraHelper);
@@ -136,12 +136,12 @@ const Shadows = () => {
     pointLight.position.set(-1, 1, 0);
     scene.add(pointLight);
     const pointLightCameraHelper = new THREE.CameraHelper(
-      pointLight.shadow.camera
+      pointLight.shadow.camera,
     );
     pointLightCameraHelper.visible = false;
     scene.add(pointLightCameraHelper);
 
-    const canvas = document.getElementById("lights") as HTMLCanvasElement;
+    const canvas = document.getElementById('lights') as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
     });
@@ -176,7 +176,7 @@ const Shadows = () => {
     };
     tick();
 
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 

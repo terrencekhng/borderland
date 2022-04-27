@@ -1,10 +1,10 @@
-import { Canvas, useThree } from "@react-three/fiber";
-import { useEffect } from "react";
-import * as THREE from "three";
+import { Canvas, useThree } from '@react-three/fiber';
+import { useEffect } from 'react';
+import * as THREE from 'three';
 
-import styles from "../Welcome/index.module.css";
+import styles from '../Welcome/index.module.css';
 
-const Cube1 = (prop: JSX.IntrinsicElements["mesh"]) => {
+const Cube1 = (prop: JSX.IntrinsicElements['mesh']) => {
   return (
     <mesh {...prop}>
       <boxGeometry args={[1, 1, 1]} />

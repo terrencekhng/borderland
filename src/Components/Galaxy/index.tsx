@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import * as THREE from "three";
-import particleTextureImage from "../../assets/textures/particles/2.png";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import GUI from "lil-gui";
+import { useEffect } from 'react';
+import * as THREE from 'three';
+import particleTextureImage from '../../assets/textures/particles/2.png';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import GUI from 'lil-gui';
 
 const sizes = {
   width: window.innerWidth,
@@ -23,8 +23,8 @@ const Galaxy = () => {
     spin: 1,
     randomness: 0.02,
     randomnessPower: 3,
-    insideColor: "#ff6030",
-    outsideColor: "#1b3984",
+    insideColor: '#ff6030',
+    outsideColor: '#1b3984',
   };
 
   let geometry: THREE.BufferGeometry;
@@ -42,7 +42,7 @@ const Galaxy = () => {
       75,
       sizes.width / sizes.height,
       0.1,
-      1000
+      1000,
     );
     camera.position.y = 5;
     camera.position.z = 7;
@@ -90,8 +90,8 @@ const Galaxy = () => {
       colors[i3 + 1] = mixedColor.g;
       colors[i3 + 2] = mixedColor.b;
     }
-    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     material = new THREE.PointsMaterial({
       size: parameters.size,
       depthWrite: false,
@@ -102,7 +102,7 @@ const Galaxy = () => {
     galaxy = new THREE.Points(geometry, material);
     scene.add(galaxy);
 
-    const canvas = document.getElementById("galaxy") as HTMLCanvasElement;
+    const canvas = document.getElementById('galaxy') as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
     });
@@ -127,7 +127,7 @@ const Galaxy = () => {
     };
     tick();
 
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 
@@ -145,7 +145,7 @@ const Galaxy = () => {
   });
 
   const reset = () => {
-    console.log("reset");
+    console.log('reset');
     geometry.dispose();
     material.dispose();
     scene.remove(galaxy);
@@ -153,49 +153,49 @@ const Galaxy = () => {
 
   const initDebug = () => {
     gui
-      .add(parameters, "count")
+      .add(parameters, 'count')
       .min(100)
       .max(100000)
       .step(100)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, "size")
+      .add(parameters, 'size')
       .min(0.001)
       .max(0.1)
       .step(0.001)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, "radius")
+      .add(parameters, 'radius')
       .min(0.01)
       .max(20)
       .step(0.01)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, "branches")
+      .add(parameters, 'branches')
       .min(2)
       .max(20)
       .step(1)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, "spin")
+      .add(parameters, 'spin')
       .min(-5)
       .max(5)
       .step(0.001)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, "randomness")
+      .add(parameters, 'randomness')
       .min(0)
       .max(2)
       .step(0.001)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, "randomnessPower")
+      .add(parameters, 'randomnessPower')
       .min(1)
       .max(10)
       .step(0.001)
       .onFinishChange(generateGalaxy);
-    gui.addColor(parameters, "insideColor").onFinishChange(generateGalaxy);
-    gui.addColor(parameters, "outsideColor").onFinishChange(generateGalaxy);
+    gui.addColor(parameters, 'insideColor').onFinishChange(generateGalaxy);
+    gui.addColor(parameters, 'outsideColor').onFinishChange(generateGalaxy);
   };
 
   return (
