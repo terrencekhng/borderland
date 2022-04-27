@@ -48,7 +48,7 @@ const parameters = {
 };
 
 const HauntedHouse = () => {
-  let currentVideoCount = useRef(0);
+  const currentVideoCount = useRef(0);
 
   useEffect(() => {
     const gui = new GUI();
