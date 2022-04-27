@@ -1,5 +1,5 @@
 import GUI from 'lil-gui';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
 
@@ -48,7 +48,7 @@ const parameters = {
 };
 
 const HauntedHouse = () => {
-  let currentVideoCount = 0;
+  let currentVideoCount = useRef(0);
 
   useEffect(() => {
     const gui = new GUI();
@@ -184,10 +184,6 @@ const HauntedHouse = () => {
     const bush3 = new THREE.Mesh(bushGeometry, bushMaterial);
     bush3.scale.set(0.4, 0.4, 0.4);
     bush3.position.set(-0.8, 0.1, 2.2);
-    let a = '2';
-    let b = {
-      a: 1,
-    };
 
     const bush4 = new THREE.Mesh(bushGeometry, bushMaterial);
     bush4.scale.set(0.15, 0.15, 0.15);
@@ -202,7 +198,6 @@ const HauntedHouse = () => {
     //   color: '#b2b6b1',
     // });
     const graveCount = 50;
-    let specialGrave = [4, 8, 20, 30];
     for (let i = 0; i < graveCount; ++i) {
       const angle = Math.random() * Math.PI * 2;
       const radius = 4 + Math.random() * 6;
@@ -550,7 +545,7 @@ const HauntedHouse = () => {
           THREE.BoxGeometry,
           THREE.MeshBasicMaterial
         >;
-        if (currentVideoCount <= parameters.videoCount) {
+        if (currentVideoCount.current <= parameters.videoCount) {
           if (currentGraveWithVideo[currentObject.name]) {
             // Turn off
             // Video
@@ -572,7 +567,7 @@ const HauntedHouse = () => {
               videoPlane.videoEl.pause();
               scene.remove(videoPlane.obj);
             });
-            currentVideoCount -= 1;
+            currentVideoCount.current -= 1;
             // remove light
             videoPlane.light.dispose();
             scene.remove(videoPlane.light);
@@ -616,7 +611,7 @@ const HauntedHouse = () => {
               duration: 1,
             });
             video.play();
-            currentVideoCount += 1;
+            currentVideoCount.current += 1;
             // Light
             const graveLight = new THREE.DirectionalLight(
               'rgba(232,200,79,0.7)',

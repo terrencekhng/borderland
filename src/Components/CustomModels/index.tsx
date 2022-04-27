@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import GUI from 'lil-gui';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
 const sizes = {
   width: window.innerWidth,
@@ -29,6 +30,33 @@ const CustomModels = () => {
     const textureLoader = new THREE.TextureLoader();
 
     // Models
+    let mixer: THREE.AnimationMixer | null = null;
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath(
+      'https://personal-1301369739.cos.ap-guangzhou.myqcloud.com/threejs/draco/',
+    );
+    dracoLoader.preload();
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setDRACOLoader(dracoLoader);
+    gltfLoader.load(
+      // 'https://personal-1301369739.cos.ap-guangzhou.myqcloud.com/threejs/models/Duck/glTF/Duck.gltf',
+      // 'https://personal-1301369739.cos.ap-guangzhou.myqcloud.com/threejs/models/FlightHelmet/glTF/FlightHelmet.gltf',
+      // 'https://personal-1301369739.cos.ap-guangzhou.myqcloud.com/threejs/models/Duck/glTF-Draco/Duck.gltf',
+      'https://personal-1301369739.cos.ap-guangzhou.myqcloud.com/threejs/models/Fox/glTF/Fox.gltf',
+      (gltf) => {
+        console.log('success');
+        console.log(gltf);
+        gltf.scene.scale.set(0.025, 0.025, 0.025);
+
+        mixer = new THREE.AnimationMixer(gltf.scene);
+        const action = mixer.clipAction(gltf.animations[0]);
+        action.play();
+
+        scene.add(gltf.scene);
+        // scene.add(...gltf.scene.children);
+      },
+    );
+
     // Plane
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(10, 10),
@@ -64,7 +92,7 @@ const CustomModels = () => {
     });
     renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
     renderer.setSize(sizes.width, sizes.height);
-    renderer.shadowMap.enabled = false;
+    renderer.shadowMap.enabled = true;
     // Shadow map algorithm
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -74,12 +102,18 @@ const CustomModels = () => {
     orbitControls.zoomSpeed = 0.5;
 
     const clock = new THREE.Clock();
+    let lastElapsedTime = 0;
     const tick = () => {
       const elapsedTime = clock.getElapsedTime();
+      const deltaTime = elapsedTime - lastElapsedTime;
+      lastElapsedTime = elapsedTime;
 
       window.requestAnimationFrame(tick);
       renderer.render(scene, camera);
       orbitControls.update();
+
+      // Update mixer
+      mixer?.update(deltaTime);
     };
     tick();
 
@@ -97,7 +131,7 @@ const CustomModels = () => {
 
   return (
     <>
-      <canvas id="custom-models"></canvas>
+      <canvas id="custom-models" />
     </>
   );
 };
