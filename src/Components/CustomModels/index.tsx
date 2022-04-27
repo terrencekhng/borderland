@@ -1,8 +1,8 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 import * as THREE from "three";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import GUI from "lil-gui";
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 const sizes = {
   width: window.innerWidth,
@@ -16,44 +16,49 @@ const CustomModels = () => {
   useEffect(() => {
     const scene = new THREE.Scene();
 
-    const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      sizes.width / sizes.height,
+      0.1,
+      1000
+    );
     camera.position.set(2, 2, 2);
     // camera.lookAt(group.position);
     scene.add(camera);
 
     const textureLoader = new THREE.TextureLoader();
 
-
     // Models
     // Plane
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(10, 10),
       new THREE.MeshStandardMaterial({
-        color: '#444444',
+        color: "#444444",
         metalness: 0,
-        roughness: 0.5
+        roughness: 0.5,
       })
     );
     floor.receiveShadow = true;
-    floor.rotation.x = - Math.PI * 0.5;
+    floor.rotation.x = -Math.PI * 0.5;
     scene.add(floor);
-
     // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.set(1024, 1024);
     directionalLight.shadow.camera.far = 15;
-    directionalLight.shadow.camera.left = - 7;
+    directionalLight.shadow.camera.left = -7;
     directionalLight.shadow.camera.top = 7;
     directionalLight.shadow.camera.right = 7;
-    directionalLight.shadow.camera.bottom = - 7;
+    directionalLight.shadow.camera.bottom = -7;
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
-    const canvas = document.getElementById('custom-models') as HTMLCanvasElement;
+    const canvas = document.getElementById(
+      "custom-models"
+    ) as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
     });
@@ -78,7 +83,7 @@ const CustomModels = () => {
     };
     tick();
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 
@@ -87,14 +92,14 @@ const CustomModels = () => {
 
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
-    })
+    });
   });
 
   return (
     <>
-      <canvas id='custom-models'></canvas>
+      <canvas id="custom-models"></canvas>
     </>
-  )
-}
+  );
+};
 
 export default CustomModels;

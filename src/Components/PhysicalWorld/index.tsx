@@ -1,9 +1,9 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 import * as THREE from "three";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import CANNON from 'cannon';
-import GUI from 'lil-gui';
-import {debounce} from 'lodash';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import CANNON from "cannon";
+import GUI from "lil-gui";
+import { debounce } from "lodash";
 
 // Import environment maps
 
@@ -19,7 +19,12 @@ const PhysicalWorld = () => {
   useEffect(() => {
     const scene = new THREE.Scene();
 
-    const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      sizes.width / sizes.height,
+      0.1,
+      1000
+    );
     camera.position.set(-3, 3, 3);
     // camera.lookAt(group.position);
     scene.add(camera);
@@ -27,22 +32,23 @@ const PhysicalWorld = () => {
     const textureLoader = new THREE.TextureLoader();
     const cubeTextureLoader = new THREE.CubeTextureLoader();
     const environmentMapTexture = cubeTextureLoader.load([
-      require('../../assets/textures/environmentMaps/1/px.png'),
-      require('../../assets/textures/environmentMaps/1/nx.png'),
-      require('../../assets/textures/environmentMaps/1/py.png'),
-      require('../../assets/textures/environmentMaps/1/ny.png'),
-      require('../../assets/textures/environmentMaps/1/pz.png'),
-      require('../../assets/textures/environmentMaps/1/nz.png'),
+      require("../../assets/textures/environmentMaps/1/px.png"),
+      require("../../assets/textures/environmentMaps/1/nx.png"),
+      require("../../assets/textures/environmentMaps/1/py.png"),
+      require("../../assets/textures/environmentMaps/1/ny.png"),
+      require("../../assets/textures/environmentMaps/1/pz.png"),
+      require("../../assets/textures/environmentMaps/1/nz.png"),
     ]);
 
     // Sounds
     const maxImpactStrength = 10;
-    const impactStrengthThreshold = 1.6
-    const hitSound = new Audio(require('../../assets/sounds/hit.mp3'));
+    const impactStrengthThreshold = 1.6;
+    const hitSound = new Audio(require("../../assets/sounds/hit.mp3"));
     const playHitSound = (collision: CANNON.ICollisionEvent) => {
       const impactStrength = collision.contact.getImpactVelocityAlongNormal();
       if (impactStrength > impactStrengthThreshold) {
-        hitSound.volume = impactStrength * 1 / (maxImpactStrength - impactStrengthThreshold);
+        hitSound.volume =
+          (impactStrength * 1) / (maxImpactStrength - impactStrengthThreshold);
         hitSound.currentTime = 0;
         hitSound.play();
       }
@@ -55,7 +61,7 @@ const PhysicalWorld = () => {
     const plane = new THREE.Mesh(
       new THREE.PlaneGeometry(10, 10),
       new THREE.MeshStandardMaterial({
-        color: '#777777',
+        color: "#777777",
         metalness: 0.3,
         roughness: 0.4,
       })
@@ -72,10 +78,10 @@ const PhysicalWorld = () => {
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.set(1024, 1024);
     directionalLight.shadow.camera.far = 15;
-    directionalLight.shadow.camera.left = - 7;
+    directionalLight.shadow.camera.left = -7;
     directionalLight.shadow.camera.top = 7;
     directionalLight.shadow.camera.right = 7;
-    directionalLight.shadow.camera.bottom = - 7;
+    directionalLight.shadow.camera.bottom = -7;
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
@@ -86,7 +92,7 @@ const PhysicalWorld = () => {
     world.broadphase = new CANNON.SAPBroadphase(world);
 
     // Materials
-    const defaultMaterial = new CANNON.Material('default');
+    const defaultMaterial = new CANNON.Material("default");
     const defaultContactMaterial = new CANNON.ContactMaterial(
       defaultMaterial,
       defaultMaterial,
@@ -104,11 +110,16 @@ const PhysicalWorld = () => {
     const floorBody = new CANNON.Body({
       mass: 0,
     });
-    floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI / 2);
+    floorBody.quaternion.setFromAxisAngle(
+      new CANNON.Vec3(-1, 0, 0),
+      Math.PI / 2
+    );
     floorBody.addShape(floorShape);
     world.addBody(floorBody);
 
-    const canvas = document.getElementById('physical-world') as HTMLCanvasElement;
+    const canvas = document.getElementById(
+      "physical-world"
+    ) as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
     });
@@ -119,7 +130,10 @@ const PhysicalWorld = () => {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     // Utils
-    let objectToUpdate: {mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>, body: CANNON.Body}[] = [];
+    let objectToUpdate: {
+      mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>;
+      body: CANNON.Body;
+    }[] = [];
     const sphereGeometry = new THREE.SphereGeometry(1, 16, 16);
     const sphereMaterial = new THREE.MeshStandardMaterial({
       metalness: 0.8,
@@ -128,10 +142,7 @@ const PhysicalWorld = () => {
     });
     // Sphere creator
     const createSphere = (radius: number, position: THREE.Vector3) => {
-      const mesh = new THREE.Mesh(
-        sphereGeometry,
-        sphereMaterial
-      );
+      const mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
       mesh.scale.set(radius, radius, radius);
       mesh.castShadow = true;
       mesh.position.copy(position);
@@ -148,7 +159,7 @@ const PhysicalWorld = () => {
       body.position.x = position.x;
       body.position.y = position.y;
       body.position.z = position.z;
-      body.addEventListener('collide', playHitSoundDebounced);
+      body.addEventListener("collide", playHitSoundDebounced);
       world.addBody(body);
 
       objectToUpdate.push({
@@ -165,18 +176,22 @@ const PhysicalWorld = () => {
       roughness: 0.4,
       envMap: environmentMapTexture,
     });
-    const createBox = (width: number, height: number, depth: number, position: THREE.Vector3) => {
-      const mesh = new THREE.Mesh(
-        boxGeometry,
-        boxMaterial
-      );
+    const createBox = (
+      width: number,
+      height: number,
+      depth: number,
+      position: THREE.Vector3
+    ) => {
+      const mesh = new THREE.Mesh(boxGeometry, boxMaterial);
       mesh.scale.set(width, height, depth);
       mesh.position.copy(position);
       mesh.castShadow = true;
       scene.add(mesh);
 
       // Physical
-      const shape = new CANNON.Box(new CANNON.Vec3(width / 2, height / 2, depth / 2));
+      const shape = new CANNON.Box(
+        new CANNON.Vec3(width / 2, height / 2, depth / 2)
+      );
       const body = new CANNON.Body({
         shape,
         mass: 1,
@@ -187,14 +202,14 @@ const PhysicalWorld = () => {
       body.position.x = position.x;
       body.position.y = position.y;
       body.position.z = position.z;
-      body.addEventListener('collide', playHitSoundDebounced);
+      body.addEventListener("collide", playHitSoundDebounced);
       world.addBody(body);
 
       objectToUpdate.push({
         mesh,
         body,
       });
-    }
+    };
 
     // Orbit controls
     const orbitControls = new OrbitControls(camera, canvas);
@@ -227,7 +242,7 @@ const PhysicalWorld = () => {
     };
     tick();
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 
@@ -237,7 +252,6 @@ const PhysicalWorld = () => {
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
     });
-
 
     // Debug
     const debugObject = {
@@ -261,27 +275,27 @@ const PhysicalWorld = () => {
             3,
             (Math.random() - 0.5) * 3
           )
-        )
+        );
       },
       reset: () => {
         for (const obj of objectToUpdate) {
-          obj.body.removeEventListener('collide', playHitSoundDebounced);
+          obj.body.removeEventListener("collide", playHitSoundDebounced);
           world.remove(obj.body);
           scene.remove(obj.mesh);
         }
         objectToUpdate = [];
       },
     };
-    gui.add(debugObject, 'createSphere');
-    gui.add(debugObject, 'createBox');
-    gui.add(debugObject, 'reset');
+    gui.add(debugObject, "createSphere");
+    gui.add(debugObject, "createBox");
+    gui.add(debugObject, "reset");
   });
 
   return (
     <>
-      <canvas id='physical-world'></canvas>
+      <canvas id="physical-world"></canvas>
     </>
-  )
-}
+  );
+};
 
 export default PhysicalWorld;

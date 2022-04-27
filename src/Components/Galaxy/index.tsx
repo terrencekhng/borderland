@@ -1,8 +1,8 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 import * as THREE from "three";
 import particleTextureImage from "../../assets/textures/particles/2.png";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import GUI from 'lil-gui';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import GUI from "lil-gui";
 
 const sizes = {
   width: window.innerWidth,
@@ -23,8 +23,8 @@ const Galaxy = () => {
     spin: 1,
     randomness: 0.02,
     randomnessPower: 3,
-    insideColor: '#ff6030',
-    outsideColor: '#1b3984',
+    insideColor: "#ff6030",
+    outsideColor: "#1b3984",
   };
 
   let geometry: THREE.BufferGeometry;
@@ -33,13 +33,17 @@ const Galaxy = () => {
   let scene: THREE.Scene;
 
   const generateGalaxy = () => {
-
     if (galaxy) {
       reset();
     }
 
     scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      sizes.width / sizes.height,
+      0.1,
+      1000
+    );
     camera.position.y = 5;
     camera.position.z = 7;
     // camera.lookAt(group.position);
@@ -62,11 +66,18 @@ const Galaxy = () => {
       // Positions
       const radius = Math.random() * parameters.radius;
       const spinAngle = radius * parameters.spin;
-      const branchAngle = (i % parameters.branches) / parameters.branches * Math.PI * 2;
+      const branchAngle =
+        ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
 
-      const randomX = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1);
-      const randomY = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1);
-      const randomZ = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1);
+      const randomX =
+        Math.pow(Math.random(), parameters.randomnessPower) *
+        (Math.random() < 0.5 ? 1 : -1);
+      const randomY =
+        Math.pow(Math.random(), parameters.randomnessPower) *
+        (Math.random() < 0.5 ? 1 : -1);
+      const randomZ =
+        Math.pow(Math.random(), parameters.randomnessPower) *
+        (Math.random() < 0.5 ? 1 : -1);
 
       positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
       positions[i3 + 1] = randomY;
@@ -79,8 +90,8 @@ const Galaxy = () => {
       colors[i3 + 1] = mixedColor.g;
       colors[i3 + 2] = mixedColor.b;
     }
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
     material = new THREE.PointsMaterial({
       size: parameters.size,
       depthWrite: false,
@@ -88,13 +99,10 @@ const Galaxy = () => {
       sizeAttenuation: true,
       vertexColors: true,
     });
-    galaxy = new THREE.Points(
-      geometry,
-      material
-    );
+    galaxy = new THREE.Points(geometry, material);
     scene.add(galaxy);
 
-    const canvas = document.getElementById('galaxy') as HTMLCanvasElement;
+    const canvas = document.getElementById("galaxy") as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
     });
@@ -119,7 +127,7 @@ const Galaxy = () => {
     };
     tick();
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 
@@ -129,7 +137,7 @@ const Galaxy = () => {
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
     });
-  }
+  };
 
   useEffect(() => {
     generateGalaxy();
@@ -137,68 +145,64 @@ const Galaxy = () => {
   });
 
   const reset = () => {
-    console.log('reset');
+    console.log("reset");
     geometry.dispose();
     material.dispose();
     scene.remove(galaxy);
-  }
+  };
 
   const initDebug = () => {
     gui
-      .add(parameters, 'count')
+      .add(parameters, "count")
       .min(100)
       .max(100000)
       .step(100)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'size')
+      .add(parameters, "size")
       .min(0.001)
       .max(0.1)
       .step(0.001)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'radius')
+      .add(parameters, "radius")
       .min(0.01)
       .max(20)
       .step(0.01)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'branches')
+      .add(parameters, "branches")
       .min(2)
       .max(20)
       .step(1)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'spin')
+      .add(parameters, "spin")
       .min(-5)
       .max(5)
       .step(0.001)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'randomness')
+      .add(parameters, "randomness")
       .min(0)
       .max(2)
       .step(0.001)
       .onFinishChange(generateGalaxy);
     gui
-      .add(parameters, 'randomnessPower')
+      .add(parameters, "randomnessPower")
       .min(1)
       .max(10)
       .step(0.001)
       .onFinishChange(generateGalaxy);
-    gui
-      .addColor(parameters, 'insideColor')
-      .onFinishChange(generateGalaxy);
-    gui
-      .addColor(parameters, 'outsideColor')
-      .onFinishChange(generateGalaxy);
-  }
+    gui.addColor(parameters, "insideColor").onFinishChange(generateGalaxy);
+    gui.addColor(parameters, "outsideColor").onFinishChange(generateGalaxy);
+  };
 
   return (
     <>
-      <canvas id='galaxy'></canvas>
+      <canvas id="galaxy"></canvas>
     </>
-  )
-}
+  );
+};
 
 export default Galaxy;

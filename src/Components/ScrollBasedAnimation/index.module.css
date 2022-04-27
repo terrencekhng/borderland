@@ -2,13 +2,12 @@ html {
   background-color: #2d4571;
 }
 
-.section
-{
+.section {
   display: flex;
   flex-direction: column;
   height: 100vh;
   position: relative;
-  font-family: 'Cabin', sans-serif;
+  font-family: "Cabin", sans-serif;
   color: #ffeded;
   text-transform: uppercase;
   font-size: 7vmin;

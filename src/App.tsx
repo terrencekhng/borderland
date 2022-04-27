@@ -1,10 +1,6 @@
-import React from 'react';
-import './App.css';
-import {
-  HashRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
+import React from "react";
+import "./App.css";
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
 
 // Components
 import Welcome from "./Components/Welcome";
@@ -29,22 +25,22 @@ function App() {
       <main>
         <Router>
           <Switch>
-            <Route path='/haunted-house'>
+            <Route path="/haunted-house">
               <HauntedHouse />
             </Route>
-            <Route path='/borderland'>
+            <Route path="/borderland">
               <ScrollBasedAnimation />
             </Route>
-            <Route path='/physical-world'>
+            <Route path="/physical-world">
               <PhysicalWorld />
             </Route>
-            <Route path='/custom-models'>
+            <Route path="/custom-models">
               <CustomModels />
             </Route>
-            <Route path='/welcome-fiber'>
+            <Route path="/welcome-fiber">
               <WelcomeFiber />
             </Route>
-            <Route path='/'>
+            <Route path="/">
               <Welcome />
             </Route>
           </Switch>

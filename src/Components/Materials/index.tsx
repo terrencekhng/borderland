@@ -1,24 +1,24 @@
-import * as THREE from 'three';
-import {useEffect} from "react";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import GUI from 'lil-gui';
+import * as THREE from "three";
+import { useEffect } from "react";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import GUI from "lil-gui";
 
 // Import texture resources
-import doorColorImage from '../../assets/textures/door/color.jpg';
-import doorAlphaImage from '../../assets/textures/door/alpha.jpg';
-import doorHeightImage from '../../assets/textures/door/height.jpg';
-import doorNormalImage from '../../assets/textures/door/normal.jpg';
-import doorAmbientOcclusionImage from '../../assets/textures/door/ambientOcclusion.jpg';
-import doorMetalnessImage from '../../assets/textures/door/metalness.jpg';
-import doorRoughnessImage from '../../assets/textures/door/roughness.jpg';
-import matcapTextureImage from '../../assets/textures/matcaps/8.png';
-import gradientTextureImage from '../../assets/textures/gradients/3.jpg';
-import nx from '../../assets/textures/environmentMaps/0/nx.jpg';
-import ny from '../../assets/textures/environmentMaps/0/ny.jpg'
-import px from '../../assets/textures/environmentMaps/0/px.jpg'
-import py from '../../assets/textures/environmentMaps/0/py.jpg'
-import nz from '../../assets/textures/environmentMaps/0/nz.jpg'
-import pz from '../../assets/textures/environmentMaps/0/pz.jpg'
+import doorColorImage from "../../assets/textures/door/color.jpg";
+import doorAlphaImage from "../../assets/textures/door/alpha.jpg";
+import doorHeightImage from "../../assets/textures/door/height.jpg";
+import doorNormalImage from "../../assets/textures/door/normal.jpg";
+import doorAmbientOcclusionImage from "../../assets/textures/door/ambientOcclusion.jpg";
+import doorMetalnessImage from "../../assets/textures/door/metalness.jpg";
+import doorRoughnessImage from "../../assets/textures/door/roughness.jpg";
+import matcapTextureImage from "../../assets/textures/matcaps/8.png";
+import gradientTextureImage from "../../assets/textures/gradients/3.jpg";
+import nx from "../../assets/textures/environmentMaps/0/nx.jpg";
+import ny from "../../assets/textures/environmentMaps/0/ny.jpg";
+import px from "../../assets/textures/environmentMaps/0/px.jpg";
+import py from "../../assets/textures/environmentMaps/0/py.jpg";
+import nz from "../../assets/textures/environmentMaps/0/nz.jpg";
+import pz from "../../assets/textures/environmentMaps/0/pz.jpg";
 
 const gui = new GUI();
 gui.close();
@@ -29,10 +29,8 @@ const sizes = {
 };
 
 const Materials = () => {
-
   useEffect(() => {
-
-    const canvas = document.getElementById('materials') as HTMLCanvasElement;
+    const canvas = document.getElementById("materials") as HTMLCanvasElement;
 
     const scene = new THREE.Scene();
     const group = new THREE.Group();
@@ -41,24 +39,26 @@ const Materials = () => {
     // Textures
     const loadingManager = new THREE.LoadingManager();
     loadingManager.onStart = () => {
-      console.log('onStart');
-    }
+      console.log("onStart");
+    };
     loadingManager.onProgress = () => {
-      console.log('onProgress');
-    }
+      console.log("onProgress");
+    };
     loadingManager.onLoad = () => {
-      console.log('onLoaded');
-    }
+      console.log("onLoaded");
+    };
     loadingManager.onError = () => {
-      console.error('onError');
-    }
+      console.error("onError");
+    };
     const textureLoader = new THREE.TextureLoader(loadingManager);
     // Door textures
     const doorColorTexture = textureLoader.load(doorColorImage);
     const doorAlphaTexture = textureLoader.load(doorAlphaImage);
     const doorHeightTexture = textureLoader.load(doorHeightImage);
     const doorNormalTexture = textureLoader.load(doorNormalImage);
-    const doorAmbientOcclusionTexture = textureLoader.load(doorAmbientOcclusionImage);
+    const doorAmbientOcclusionTexture = textureLoader.load(
+      doorAmbientOcclusionImage
+    );
     const doorMetalnessTexture = textureLoader.load(doorMetalnessImage);
     const doorRoughnessTexture = textureLoader.load(doorRoughnessImage);
     // Other textures
@@ -70,7 +70,12 @@ const Materials = () => {
 
     const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager);
     const environmentMapTexture = cubeTextureLoader.load([
-      px, nx, py, ny, pz, nz
+      px,
+      nx,
+      py,
+      ny,
+      pz,
+      nz,
     ]);
 
     // Materials
@@ -117,19 +122,21 @@ const Materials = () => {
     // envMap
     material.envMap = environmentMapTexture;
 
-
     // Objects
     const sphere = new THREE.Mesh(
       new THREE.SphereGeometry(0.5, 64, 64),
       material
     );
-    sphere.position.x = -1.5
+    sphere.position.x = -1.5;
     group.add(sphere);
     const plane = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1, 100, 100),
       material
     );
-    plane.geometry.setAttribute('uv2', new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2));
+    plane.geometry.setAttribute(
+      "uv2",
+      new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+    );
     group.add(plane);
     const torus = new THREE.Mesh(
       new THREE.TorusGeometry(0.3, 0.2, 64, 128),
@@ -146,7 +153,12 @@ const Materials = () => {
     pointLight.position.z = 4;
     scene.add(ambientLight, pointLight);
 
-    const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 2000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      sizes.width / sizes.height,
+      0.1,
+      2000
+    );
     camera.position.z = 4;
     scene.add(camera);
     camera.lookAt(group.position);
@@ -178,34 +190,31 @@ const Materials = () => {
       sphere.rotation.x = 0.15 * elapsedTime;
       plane.rotation.x = 0.15 * elapsedTime;
       torus.rotation.x = 0.15 * elapsedTime;
-    }
+    };
 
     tick();
 
     // Debug
-    gui.add(material, 'metalness').min(0).max(1).step(0.01);
-    gui.add(material, 'roughness').min(0).max(1).step(0.01);
-    gui.add(material, 'aoMapIntensity').min(0).max(4).step(0.01);
-    gui.add(material, 'displacementScale').min(0).max(1).step(0.001);
+    gui.add(material, "metalness").min(0).max(1).step(0.01);
+    gui.add(material, "roughness").min(0).max(1).step(0.01);
+    gui.add(material, "aoMapIntensity").min(0).max(4).step(0.01);
+    gui.add(material, "displacementScale").min(0).max(1).step(0.001);
 
-
-
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
       camera.aspect = sizes.width / sizes.height;
       camera.updateProjectionMatrix();
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
-    })
-
+    });
   }, []);
 
   return (
     <>
-      <canvas id='materials'></canvas>
+      <canvas id="materials"></canvas>
     </>
-  )
-}
+  );
+};
 
 export default Materials;

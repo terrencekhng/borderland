@@ -1,6 +1,6 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 import * as THREE from "three";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import GUI from "lil-gui";
 
 import particleTextureImage from "../../assets/textures/particles/2.png";
@@ -17,7 +17,12 @@ const Particles = () => {
   useEffect(() => {
     const scene = new THREE.Scene();
 
-    const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      sizes.width / sizes.height,
+      0.1,
+      1000
+    );
     camera.position.z = 3;
     // camera.lookAt(group.position);
     scene.add(camera);
@@ -38,8 +43,14 @@ const Particles = () => {
       position[i] = (Math.random() - 0.5) * 5;
       colors[i] = Math.random();
     }
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(position, 3));
-    particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    particlesGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(position, 3)
+    );
+    particlesGeometry.setAttribute(
+      "color",
+      new THREE.BufferAttribute(colors, 3)
+    );
 
     // Material
     const particlesMaterial = new THREE.PointsMaterial({
@@ -54,13 +65,10 @@ const Particles = () => {
       blending: THREE.AdditiveBlending,
       vertexColors: true,
     });
-    const particles = new THREE.Points(
-      particlesGeometry,
-      particlesMaterial
-    );
+    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particles);
 
-    const canvas = document.getElementById('lights') as HTMLCanvasElement;
+    const canvas = document.getElementById("lights") as HTMLCanvasElement;
     const renderer = new THREE.WebGLRenderer({
       canvas,
     });
@@ -88,7 +96,7 @@ const Particles = () => {
     };
     tick();
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       sizes.width = window.innerWidth;
       sizes.height = window.innerHeight;
 
@@ -97,14 +105,14 @@ const Particles = () => {
 
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
-    })
+    });
   });
 
   return (
     <>
-      <canvas id='lights'></canvas>
+      <canvas id="lights"></canvas>
     </>
-  )
-}
+  );
+};
 
 export default Particles;
